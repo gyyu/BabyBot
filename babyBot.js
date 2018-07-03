@@ -1,9 +1,8 @@
 const tmi = require('tmi.js')
-// const haikudos = require('haikudos')
-const setting = require("./config.json")
-var fs = require("fs")
+const setting = require("./settings.json")
+const fs = require("fs")
 
-var startTime;
+let startTime;
 
 // Valid commands start with:
 let commandPrefix = '!'
@@ -18,36 +17,8 @@ let opts = {
   ]
 }
 
-
-
 // These are the commands the bot knows (defined below):
 let knownCommands = { growthReport }
-
-// // Function called when the "echo" command is issued:
-// function echo (target, context, params) {
-//   // If there's something to echo:
-//   if (params.length) {
-//     // Join the params into a string:
-//     const msg = params.join(' ')
-//     // Send it back to the correct place:
-//     sendMessage(target, context, msg)
-//   } else { // Nothing to echo
-//     console.log(`* Nothing to echo`)
-//   }
-// }
-
-// // Function called when the "haiku" command is issued:
-// function haiku (target, context) {
-//   // Generate a new haiku:
-//   haikudos((newHaiku) => {
-//     // Split it line-by-line:
-//     newHaiku.split('\n').forEach((h) => {
-//     // Send each line separately:
-//     sendMessage(target, context, h)
-//     })
-//   })
-// }
-
 
 //Function called when !growthReport command is called
 function growthReport (channel, context){
@@ -148,6 +119,7 @@ function onMessageHandler (target, context, msg, self) {
     command(target, context, params)
     console.log(`* Executed ${commandName} command for ${context.username}`)
   } else {
+    sendMessage(target, context, setting.noCommandFoundMsg)
     console.log(`* Unknown command ${commandName} from ${context.username}`)
   }
 }
