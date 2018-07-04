@@ -1,7 +1,9 @@
 {
     
     "ageConversion" : 600000,
-    "noCommandFoundMsg" : "This is not a valid command.",
-    "recordCountToFlush" : 100
+    "recordCountToFlush" : 100,
+
+    "greetingMsg" : "Hello, I'm babyBot. Please raise me.",
+    "noCommandFoundMsg" : "This is not a valid command."
     
 }

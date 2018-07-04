@@ -66,19 +66,9 @@ client.on("unhost", onUnhostHandler)
 // Connect to Twitch:
 client.connect()
 
-
-function onUnhostHandler(channel, viewers){
-
-  console.log("End hosting")
-
-
-}
-
-
-
-
 function onJoinHandler(target, username){
 
+  sendMessage(target, username, setting.greetingMsg)
   console.log(opts.identity.username)
 
 }
