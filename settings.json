@@ -3,7 +3,19 @@
     "ageConversion" : 600000,
     "recordCountToFlush" : 100,
 
+    "commandPrefix" : "!",
     "greetingMsg" : "Hello, I'm babyBot. Please raise me.",
-    "noCommandFoundMsg" : "This is not a valid command."
+    "noCommandFoundMsg" : "This is not a valid command.",
+
+    "opts" : {
+        "identity" : {
+            "username" : "kisakanatest",
+            "password" : "oauth:3w1uj02qrf6imeyoldjg6y8ti3bbmg"
+        },
+
+        "channels" : [
+            "kisakana"
+        ]
     
+    }
 }

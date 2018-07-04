@@ -1,24 +1,11 @@
 const tmi = require('tmi.js')
 const chatRecorder = require('./chatRecorder.js')
 const setting = require("./settings.json")
+const opts = setting.opts
 
 let startTime;
 
-// Valid commands start with:
-let commandPrefix = '!'
-// Define configuration options:
-let opts = {
-  identity: {
-    username: 'kisakanatest',
-    password: 'oauth:' + '3w1uj02qrf6imeyoldjg6y8ti3bbmg'
-  },
-  channels: [
-    'kisakana'
-  ]
-}
-
-// These are the commands the bot knows (defined below):
-let knownCommands = { growthReport }
+let knownCommands = { "growthReport" : growthReport }
 
 //Function called when !growthReport command is called
 function growthReport (channel, context){
@@ -45,6 +32,7 @@ function calculateAge(){
 
 // Helper function to send the correct type of message:
 function sendMessage (target, context, message) {
+
   if (context['message-type'] === 'whisper') {
     client.whisper(target, message)
   } else {
@@ -60,30 +48,31 @@ client.on('message', onMessageHandler)
 client.on('connected', onConnectedHandler)
 client.on('disconnected', onDisconnectedHandler)
 client.on("join", onJoinHandler)
-client.on("unhost", onUnhostHandler)
-
 
 // Connect to Twitch:
 client.connect()
 
-function onJoinHandler(target, username){
+function onJoinHandler(target, username,self){
 
-  sendMessage(target, username, setting.greetingMsg)
-  console.log(opts.identity.username)
+  if (self){
+
+    sendMessage(opts.channels[0], opts, setting.greetingMsg)
+
+  }
+
+  console.log(username + "enters the chat")
 
 }
 
-
-
 // Called every time a message comes in:
 function onMessageHandler (target, context, msg, self) {
-
+  
   let chatMsg = `[${target} (${context['message-type']})] ${context.username}: ${msg}`
   chatRecorder.storeMsg(chatMsg)
   console.log(chatMsg)
 
   // Ignore messages from the bot or messages that are not commands
-  if (self || msg.substr(0, 1) !== commandPrefix) {return} 
+  if (self || msg.substr(0, 1) !== setting.commandPrefix) {return} 
 
   // Split the message into individual words:
   const parse = msg.slice(1).split(' ')
@@ -91,23 +80,28 @@ function onMessageHandler (target, context, msg, self) {
   const commandName = parse[0]
   // The rest (if any) are the parameters:
   const params = parse.splice(1)
-
+  
   // If the command is known, let's execute it:
-  if (commandName in knownCommands) {
-    // Retrieve the function by its name:
+  if (knownCommands[commandName]) {
+    
+    //get function 
     const command = knownCommands[commandName]
-    // Then call the command with parameters:
     command(target, context, params)
+
     console.log(`* Executed ${commandName} command for ${context.username}`)
+  
   } else {
+    
     sendMessage(target, context, setting.noCommandFoundMsg)
     console.log(`* Unknown command ${commandName} from ${context.username}`)
+  
   }
 }
 
 // Called every time the bot connects to Twitch chat:
 function onConnectedHandler (addr, port) {
   console.log(`* Connected to ${addr}:${port}`)
+  
   startTime = (new Date).getTime()
   console.log(startTime)
 }
