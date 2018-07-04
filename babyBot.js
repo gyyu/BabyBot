@@ -1,6 +1,6 @@
 const tmi = require('tmi.js')
+const chatRecorder = require('./chatRecorder.js')
 const setting = require("./settings.json")
-const fs = require("fs")
 
 let startTime;
 
@@ -29,13 +29,6 @@ function growthReport (channel, context){
 
   reportMessage = "I'm " + age + " years old!"
 
-//   fs.writeFile("./test", reportMessage, function(err) {
-//     if(err) {
-//         return console.log(err);
-//     }
-
-//     console.log("The file was saved!");
-// }); 
   sendMessage(channel, context, reportMessage)
 
 }
@@ -94,15 +87,13 @@ function onJoinHandler(target, username){
 
 // Called every time a message comes in:
 function onMessageHandler (target, context, msg, self) {
-  if (self) { return } // Ignore messages from the bot
 
-  // This isn't a command since it has no prefix:
-  if (msg.substr(0, 1) !== commandPrefix) {
-    console.log(`[${target} (${context['message-type']})] ${context.username}: ${msg}`)
-    return
-  }
+  let chatMsg = `[${target} (${context['message-type']})] ${context.username}: ${msg}`
+  chatRecorder.storeMsg(chatMsg)
+  console.log(chatMsg)
 
-
+  // Ignore messages from the bot or messages that are not commands
+  if (self || msg.substr(0, 1) !== commandPrefix) {return} 
 
   // Split the message into individual words:
   const parse = msg.slice(1).split(' ')
