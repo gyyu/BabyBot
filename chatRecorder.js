@@ -1,5 +1,5 @@
 const fs = require('fs')
-const setting = require("./settings.json")
+const setting = require('./Settings/settings.json')
 
 const ChatRecorder = {
     
@@ -19,7 +19,7 @@ const ChatRecorder = {
 
     saveMsg : function(){
 
-        fs.writeFileSync('./record_' + Date.now(), ChatRecorder.records.join('\n'))
+        fs.writeFileSync( setting.outputPath + 'record_' + Date.now(), ChatRecorder.records.join('\n'))
         ChatRecorder.records = []
     }
 }

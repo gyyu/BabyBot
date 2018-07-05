@@ -2,9 +2,12 @@
     
     "ageConversion" : 600000,
     "recordCountToFlush" : 100,
-    "checkOfflineInterval" : 10000,
+    "checkOfflineInterval" : 0,
+    "checkAgeInterval" : 10000,
     "exitTimeout" : 0,
 
+    "outputPath" : "./Outputs/",
+    "settingPath" : "./Settings/",
     "commandPrefix" : "!",
     "greetingMsg" : "Hello, I'm babyBot. Please raise me.",
     "noCommandFoundMsg" : "This is not a valid command.",

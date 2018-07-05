@@ -1,25 +1,32 @@
 const tmi = require('tmi.js')
 const chatRecorder = require('./chatRecorder.js')
-const setting = require("./settings.json")
+const botStateRecorder = require('./botStateRecorder')
+const setting = require('./Settings/settings.json')
 const opts = setting.opts
+const botState = require('./Settings/botState.json')
+
 
 let startTime;
-
+let currentAge = 0;
 let knownCommands = { "growthReport" : growthReport }
 
 //Function called when !growthReport command is called
 function growthReport (channel, context){
 
-  age = calculateAge()
 
-  console.log(age)
+  console.log(currentAge)
 
-  reportMessage = "I'm " + age + " years old!"
+  reportMessage = "I'm " + currentAge + " years old!"
 
   sendMessage(channel, context, reportMessage)
 
 }
 
+
+function updateAge(){
+
+  currentAge = calculateAge()
+}
 //Calculates the bot's age
 function calculateAge(){
 
@@ -57,6 +64,9 @@ function saveAndExit(){
       
   setTimeout(function() {
 
+    botStateRecorder.backupState()
+    botState.age = currentAge
+    botStateRecorder.saveState(botState)
     chatRecorder.saveMsg()
     process.exit(1)
 
@@ -83,7 +93,6 @@ client.on('message', onMessageHandler)
 client.on('connected', onConnectedHandler)
 client.on('disconnected', onDisconnectedHandler)
 client.on("join", onJoinHandler)
-client.on("unhost", onUnhostHandler)
 
 // Connect to Twitch:
 client.connect()
@@ -144,6 +153,7 @@ function onConnectedHandler (addr, port, self) {
   console.log(startTime)
 
   setInterval(checkIfOffLine, setting.checkOfflineInterval)
+  setInterval(updateAge, setting.checkAgeInterval)
 
 }
 
