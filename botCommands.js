@@ -1,6 +1,12 @@
-let knownCommands = { introduce, feed }
-let timers = [300000, 600000, 900000]
+let knownCommands = { introduce, feed, teach }
+var timers = [300000, 600000, 900000]
 var randomTime = timers[Math.floor(Math.random() * myArray.length)];
+var learnedCurseWords = []
+
+// pulling list of curse words from a text file and putting them into an array
+var possibleCurseWords = require('fs').readFileSync(listofbadwords.txt, 'utf-8')
+    .split('\n')
+    .filter(Boolean);
 
 // Send a message to the server when the bot has connected 
 client.on('connected', function(addr,port) {
@@ -18,6 +24,7 @@ client.on('chat', function(channel, user, message, self) {
    sendMessage('channel', 'message', 'you suck too')
 });
 
+
 // Tags user that it is responding to when it reads the message hi
 client.on('chat', function(channel, user, message, self) {
   if(message === "Hi")
@@ -33,12 +40,12 @@ function introduce (target, context) {
 // Bot will do something every 5 mins (in milliseconds), we should probably make a list of possible intervals and rotate through them
 setInterval( ()=> {
   client.say("channel", "Feed me");
-}, randomTime);
+}, timers);
 
 // Bot will do something every 5 mins (in milliseconds), we should probably make a list of possible intervals and rotate through them
 setInterval( ()=> {
   client.say("channel", "I am going to sleep now. Please don't yell or I will start crying");
-}, randomTime);
+}, timers);
 
 // Helper function to send the correct type of message:
 function sendMessage (target, context, message) {
@@ -73,6 +80,9 @@ function onMessageHandler (target, context, msg, self) {
     // Then call the command with parameters:
     command(target, context, params)
     console.log(`* Executed ${commandName} command for ${context.username}`)
+  } else if (commandName === username) 
+  {
+    // No command was said, but the bot was tagged do something here
   } else {
     console.log(`* Unknown command ${commandName} from ${context.username}`)
   }
