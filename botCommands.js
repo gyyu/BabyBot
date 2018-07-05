@@ -9,16 +9,6 @@ var possibleCurseWords = require('fs').readFileSync(listofbadwords.txt, 'utf-8')
     .split('\n')
     .filter(Boolean);
 
-// Send a message to the server when the bot has connected 
-client.on('connected', function(addr,port) {
-  console.log("[bot] Bot was started")
-});
-
-// Send a message to the chat when the bot has connected
-client.on('connected', function(addr,port) {
-  client.say("user can go here", "Hi I am blank bot here to blank blank")
-});
-
 // Bot will do something every 5 mins (in milliseconds), we should probably make a list of possible intervals and rotate through them
 function feed (channel, user, message, self) {
   setInterval( ()=> {
@@ -67,10 +57,11 @@ function onMessageHandler (target, context, msg, self) {
     command(target, context, params)
     console.log(`* Executed ${commandName} command for ${context.username}`)
    
-    // No command was said, but the bot was tagged, we should put whatever is said into a knowledge database
+    // No command was said, but the bot was tagged, we should put whatever is said into a knowledge database or say what the user wants the bot to say
   } else if (commandName === username) 
   {
     if (parse.includes('say')) {
+      msg.slice(1) // Remove the 'say' keyword, send everything after it, the tagged username should already be removed
       sendMessage('channel', 'message', msg)
       if (parse.some(r=> possibleCurseWords.indexOf(r) >= 0) === true && !(parse.some(r=> learnedCurseWords.indexOf(r) >= 0)))
       {
