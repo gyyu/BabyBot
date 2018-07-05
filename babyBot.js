@@ -29,6 +29,41 @@ function calculateAge(){
     return convertedAge.toFixed(2)
 }
 
+function checkIfOffLine() {
+  client.api({
+    
+    url : setting.channelUrl, headers : setting.headers
+
+  }, function(err, res, body){
+
+    console.log(body.stream)
+
+    if(body.stream){ 
+      
+      return 
+    
+    }else{
+
+      saveAndExit()
+
+    }
+
+  });
+}
+
+function saveAndExit(){
+
+  sendMessage(opts.channels[0], opts, setting.exitMsg)
+      
+  setTimeout(function() {
+
+    chatRecorder.saveMsg()
+    process.exit(1)
+
+  }, setting.exitTimeout)
+
+}
+
 
 // Helper function to send the correct type of message:
 function sendMessage (target, context, message) {
@@ -48,9 +83,16 @@ client.on('message', onMessageHandler)
 client.on('connected', onConnectedHandler)
 client.on('disconnected', onDisconnectedHandler)
 client.on("join", onJoinHandler)
+client.on("unhost", onUnhostHandler)
 
 // Connect to Twitch:
 client.connect()
+
+function onUnhostHandler(target, context){
+
+    checkIfOffLine()
+
+}
 
 function onJoinHandler(target, username,self){
 
@@ -60,7 +102,7 @@ function onJoinHandler(target, username,self){
 
   }
 
-  console.log(username + "enters the chat")
+  console.log(username + " enters the chat")
 
 }
 
@@ -99,15 +141,20 @@ function onMessageHandler (target, context, msg, self) {
 }
 
 // Called every time the bot connects to Twitch chat:
-function onConnectedHandler (addr, port) {
+function onConnectedHandler (addr, port, self) {
+
   console.log(`* Connected to ${addr}:${port}`)
+
   
   startTime = (new Date).getTime()
   console.log(startTime)
+
+  setInterval(checkIfOffLine, setting.checkOfflineInterval)
+
 }
 
 // Called every time the bot disconnects from Twitch:
 function onDisconnectedHandler (reason) {
   console.log(`Womp womp, disconnected: ${reason}`)
-  process.exit(1)
+  saveAndExit()
 }

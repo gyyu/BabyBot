@@ -2,10 +2,21 @@
     
     "ageConversion" : 600000,
     "recordCountToFlush" : 100,
+    "checkOfflineInterval" : 10000,
+    "exitTimeout" : 0,
 
     "commandPrefix" : "!",
     "greetingMsg" : "Hello, I'm babyBot. Please raise me.",
     "noCommandFoundMsg" : "This is not a valid command.",
+    "exitMsg" : "That's it for today! Seeya!",
+
+    
+    "channelUrl" : "https://api.twitch.tv/kraken/streams/kisakana",
+    "headers" : {
+
+        "Client-ID" : "fc9g5vx67vel9jme7vd0kvfqueqrj5"
+    },
+
 
     "opts" : {
         "identity" : {
@@ -16,6 +27,7 @@
         "channels" : [
             "kisakana"
         ]
+
     
     }
 }

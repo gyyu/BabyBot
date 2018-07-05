@@ -11,11 +11,16 @@ const ChatRecorder = {
 
         if (ChatRecorder.records.length >= setting.recordCountToFlush){
 
-            fs.writeFileSync('./record_' + Date.now(), ChatRecorder.records.join('\n'))
-            ChatRecorder.records = []
+            this.saveMsg()
 
         }
 
+    },
+
+    saveMsg : function(){
+
+        fs.writeFileSync('./record_' + Date.now(), ChatRecorder.records.join('\n'))
+        ChatRecorder.records = []
     }
 }
 
