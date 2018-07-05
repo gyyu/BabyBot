@@ -3,7 +3,8 @@ var timers = [300000, 600000, 900000];
 var randomTime = timers[Math.floor(Math.random() * timers.length)];
 
 var learnedCurseWords = [];
-var curseWordCounter = learnedCurseWords.length;
+var uniqueCurseWords = [];
+var curseWordCounter = uniqueCurseWords.length;
 
 // Pulling list of curse words from a text file and putting them into an array
 var possibleCurseWords = require('fs').readFileSync(listofbadwords.txt, 'utf-8')
@@ -49,12 +50,12 @@ function onMessageHandler (target, context, msg, self) {
     return
   }
 
-  // Split the message into individual words:
+  // Split the message into individual words with the first character (! or @) being removed
   const parse = msg.slice(1).split(' ')
   // The command name is the first (0th) one:
   const commandName = parse[0]
   // The rest (if any) are the parameters:
-  const params = parse.splice(1)
+  const params = parse.shift()
 
   // If the command is known, let's execute it:
   if (commandName in knownCommands) {
@@ -65,19 +66,24 @@ function onMessageHandler (target, context, msg, self) {
     console.log(`* Executed ${commandName} command for ${context.username}`)
    
     // No command was said, but the bot was tagged, we should put whatever is said into a knowledge database or say what the user wants the bot to say
-  } else if (commandName === username) 
-  {
-    if (parse.includes('say')) {
-      msg.slice(1) // Remove the 'say' keyword, send everything after it, the tagged username should already be removed
-      sendMessage('channel', 'message', msg)
-      // If the message contains a curse word and it's not part of the learned curse words, add it.
-      if (parse.some(r=> possibleCurseWords.indexOf(r) >= 0) === true && !(parse.some(r=> learnedCurseWords.indexOf(r) >= 0)))
-      {
-        learnedCurseWords.push(parse)
+  } else if (commandName === username) {
+    // Lets go through each word in the message and look for keywords such as curse words.
+    for ( var i = 0; i < parse.length; i++ ) {
+
+      // Keyword code can go here. Might be worth turning all this into a function.
+
+      // This will look for curse words in the message and add it to a list of curse words that the bot knows
+      for ( var e = 0; e < possibleCurseWords.length; e++ ) {
+        if ( parse[i] === possibleCurseWords[e]) {
+          // Push the new curse words to the learned list 
+          learnedCurseWords.push(parse[i]);
+          // Have to do this to avoid duplicate curse words learned. Have to find a cleaner way of oding it
+          uniqueCurseWords = learnedCurseWords.filter(function(item, i, ar){ return ar.indexOf(item) === i; });
+        }
       }
-    } 
+    }
+  }
     else {
     console.log(`* Unknown command ${commandName} from ${context.username}`)
     }
   }
-}
