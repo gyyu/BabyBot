@@ -88,12 +88,6 @@ client.on("unhost", onUnhostHandler)
 // Connect to Twitch:
 client.connect()
 
-function onUnhostHandler(target, context){
-
-    checkIfOffLine()
-
-}
-
 function onJoinHandler(target, username,self){
 
   if (self){
