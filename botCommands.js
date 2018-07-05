@@ -1,6 +1,6 @@
 let knownCommands = { introduce, feed, teach };
 var timers = [300000, 600000, 900000];
-var randomTime = timers[Math.floor(Math.random() * myArray.length)];
+var randomTime = timers[Math.floor(Math.random() * timers.length)];
 
 var learnedCurseWords = [];
 var curseWordCounter = learnedCurseWords.length;
