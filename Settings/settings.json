@@ -1,9 +1,9 @@
 {
     
-    "ageConversion" : 600000,
+    "ageConversion" : 720000,
     "recordCountToFlush" : 100,
-    "checkOfflineInterval" : 0,
-    "checkAgeInterval" : 10000,
+    "checkOfflineInterval" : 66000,
+    "checkAgeInterval" : 6000,
     "exitTimeout" : 0,
 
     "outputPath" : "./Outputs/",
@@ -15,6 +15,39 @@
 
     
     "channelUrl" : "https://api.twitch.tv/kraken/streams/kisakana",
+
+    "keywords" : [
+
+        "Hi",
+        "suck",
+        "favorite"
+
+    ],
+
+    "responses" : {
+
+        "Hi" : "Hello",
+        "suck" : "No"
+
+    },
+
+    "requests" : [
+
+        "Feed",
+        "Change",
+        "Nap"
+
+    ],
+
+    "requestIntervals" : [
+
+        5000,
+        10000,
+        15000
+
+
+    ],
+
     "headers" : {
 
         "Client-ID" : "fc9g5vx67vel9jme7vd0kvfqueqrj5"
