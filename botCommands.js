@@ -1,51 +1,29 @@
-let knownCommands = { introduce, feed, teach }
-var timers = [300000, 600000, 900000]
-var randomTime = timers[Math.floor(Math.random() * myArray.length)];
-var learnedCurseWords = []
+let knownCommands = { introduce, feed, teach };
+var timers = [300000, 600000, 900000];
+var randomTime = timers[Math.floor(Math.random() * timers.length)];
 
-// pulling list of curse words from a text file and putting them into an array
+var learnedCurseWords = [];
+var uniqueCurseWords = [];
+var curseWordCounter = uniqueCurseWords.length;
+
+// Pulling list of curse words from a text file and putting them into an array
 var possibleCurseWords = require('fs').readFileSync(listofbadwords.txt, 'utf-8')
     .split('\n')
     .filter(Boolean);
 
-// Send a message to the server when the bot has connected 
-client.on('connected', function(addr,port) {
-  console.log("[bot] Bot was started")
-});
-
-// Send a message to the chat when the bot has connected
-client.on('connected', function(addr,port) {
-  client.say("user can go here", "Hi I am blank bot here to blank blank")
-});
-
-// What to do if a command is detected
-client.on('chat', function(channel, user, message, self) {
-  if(message === "you suck!")
-   sendMessage('channel', 'message', 'you suck too')
-});
-
-
-// Tags user that it is responding to when it reads the message hi
-client.on('chat', function(channel, user, message, self) {
-  if(message === "Hi")
-    client.say("channel", user['display-name'] + "Hi")
-});
-
-// what to do if the introduce command is detected, 2 ways to do it.
-function introduce (target, context) {
-  sendMessage('channel', 'message', 'introduce blank i am blank intro blank')
-  client.say("user can go here", "introduce blank i am blank intr blank")
+// Bot will do something every 5 mins (in milliseconds), we should probably make a list of possible intervals and rotate through them
+function requestFeed (channel, user, message, self) {
+  setInterval( ()=> {
+    client.say("channel", "Feed me");
+  }, randomTime);
 }
 
 // Bot will do something every 5 mins (in milliseconds), we should probably make a list of possible intervals and rotate through them
-setInterval( ()=> {
-  client.say("channel", "Feed me");
-}, timers);
-
-// Bot will do something every 5 mins (in milliseconds), we should probably make a list of possible intervals and rotate through them
-setInterval( ()=> {
-  client.say("channel", "I am going to sleep now. Please don't yell or I will start crying");
-}, timers);
+function requestNap (channel, user, message, self) {
+  setInterval( ()=> {
+    client.say("channel", "I am going to sleep now. Please don't yell or I will start crying");
+  }, randomTime);
+}
 
 // Helper function to send the correct type of message:
 function sendMessage (target, context, message) {
@@ -53,6 +31,12 @@ function sendMessage (target, context, message) {
     client.whisper(target, message)
   } else {
     client.say(target, message)
+  }
+}
+
+function failedBot (target, context, message) {
+  if (curseWordCounter == possibleCurseWords.length) {
+    sendMessage('channel', 'message', 'you have failed in raising me,')
   }
 }
 
@@ -66,12 +50,12 @@ function onMessageHandler (target, context, msg, self) {
     return
   }
 
-  // Split the message into individual words:
+  // Split the message into individual words with the first character (! or @) being removed
   const parse = msg.slice(1).split(' ')
   // The command name is the first (0th) one:
   const commandName = parse[0]
   // The rest (if any) are the parameters:
-  const params = parse.splice(1)
+  const params = parse.shift()
 
   // If the command is known, let's execute it:
   if (commandName in knownCommands) {
@@ -80,12 +64,26 @@ function onMessageHandler (target, context, msg, self) {
     // Then call the command with parameters:
     command(target, context, params)
     console.log(`* Executed ${commandName} command for ${context.username}`)
-  } else if (commandName === username) 
-  {
-    // No command was said, but the bot was tagged do something here
-  } else {
-    console.log(`* Unknown command ${commandName} from ${context.username}`)
+   
+    // No command was said, but the bot was tagged, we should put whatever is said into a knowledge database or say what the user wants the bot to say
+  } else if (commandName === username) {
+    // Lets go through each word in the message and look for keywords such as curse words.
+    for ( var i = 0; i < parse.length; i++ ) {
+
+      // Keyword code can go here. Might be worth turning all this into a function.
+
+      // This will look for curse words in the message and add it to a list of curse words that the bot knows
+      for ( var e = 0; e < possibleCurseWords.length; e++ ) {
+        if ( parse[i] === possibleCurseWords[e]) {
+          // Push the new curse words to the learned list 
+          learnedCurseWords.push(parse[i]);
+          // Have to do this to avoid duplicate curse words learned. Have to find a cleaner way of oding it
+          uniqueCurseWords = learnedCurseWords.filter(function(item, i, ar){ return ar.indexOf(item) === i; });
+        }
+      }
+    }
   }
-}
-
-
+    else {
+    console.log(`* Unknown command ${commandName} from ${context.username}`)
+    }
+  }
