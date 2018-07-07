@@ -1,9 +1,16 @@
 const fs = require('fs')
-const setting = require('./Settings/settings.json')
+const setting = require('./Settings/chatRecorderSetting.json')
 
 const ChatRecorder = {
     
     records : [],
+
+    getTimeStamp : function(){
+
+        let date = new Date()
+        return date.getFullYear() + "" + date.getMonth()  + "" +  date.getDate()  + "" + date.getHours() + "" + date.getMinutes() + "" + date.getSeconds()
+
+    },
 
     storeMsg : function(msg) {
         
@@ -11,7 +18,7 @@ const ChatRecorder = {
 
         if (ChatRecorder.records.length >= setting.recordCountToFlush){
 
-            this.saveMsg()
+            ChatRecorder.saveMsg()
 
         }
 
@@ -19,7 +26,7 @@ const ChatRecorder = {
 
     saveMsg : function(){
 
-        fs.writeFileSync( setting.outputPath + 'record_' + Date.now(), ChatRecorder.records.join('\n'))
+        fs.writeFileSync( setting.outputPath + 'record_' + ChatRecorder.getTimeStamp(), ChatRecorder.records.join('\n'))
         ChatRecorder.records = []
     }
 }
