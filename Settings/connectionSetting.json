@@ -1,6 +1,7 @@
 {
     
-    "checkOfflineInterval" : 10000,
+    "checkOfflineInterval" : 5000000,
+    "getRandomEventInterval" : 50000,
     
     
     "commandPrefix" : "!",

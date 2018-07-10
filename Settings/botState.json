@@ -4,6 +4,14 @@
     "secToMonth" : 30,
     "secToDay" : 2,
 
+
+    "greetingMessage" : "Hello, I'm babyBot. Please raise me.",
+    "noCommandFoundMessage" : "This is not a valid command.",
+    "exitMessage" : "That's it for today! Seeya!",
+    "cryingMessage" : "Waaaaa Waaaaa WAAAAAAAAAA",
+    "diaperChangeMessage" : "Change My DIAPER",
+    "nappingMessage" : "I want bedtime story",
+
     "keywords" : {
 
         "favorite" : {

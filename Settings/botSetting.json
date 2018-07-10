@@ -4,10 +4,6 @@
     "exitDelay" : 0,
     "wordWeight" : 3,
 
-    "greetingMessage" : "Hello, I'm babyBot. Please raise me.",
-    "noCommandFoundMessage" : "This is not a valid command.",
-    "exitMessage" : "That's it for today! Seeya!",
-
     "commands" : [
 
         "growthReport"

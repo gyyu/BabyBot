@@ -6,7 +6,17 @@ const BabyBot = {
   beginingAge : setting.age,
   secToYear : setting.secToYear,
   secToMonth : setting.secToMonth,
-  secToDay : setting.secToYear,
+  secToDay : setting.secToDay,
+
+
+
+  updateBotState : function(){
+
+    setting.age = BabyBot.getCurrentAgeInDay()
+   
+    return setting
+
+  },
 
   getAgeInYMD : function (){
 
@@ -34,6 +44,24 @@ const BabyBot = {
     let currentAge = BabyBot.beginingAge + ageInDay
     
     return currentAge
+  },
+
+  getGreetingMessage : function(){
+
+    return setting.greetingMessage
+
+  },
+
+  getCommandNotFoundMessage : function() {
+
+    return setting.noCommandFoundMessage
+
+  },
+
+  getExitingMessage : function() {
+
+    return setting.exitMessage
+
   },
 
   getGrowthReport : function(){
@@ -64,8 +92,8 @@ const BabyBot = {
       
         if(keywords[firstWord][secondWord]){
 
-          let arrLen = keywords[firstWord][secondWord].length-1
-          let randomNumber = Math.floor((Math.random() * arrLen) + 1)
+          let arrLen = keywords[firstWord][secondWord].length
+          let randomNumber = Math.floor((Math.random() * arrLen))
           response = keywords[firstWord][secondWord][randomNumber]
           
         }else{
@@ -85,6 +113,23 @@ const BabyBot = {
     
     return response
     
+
+  },
+  cryingEvent : function(){
+
+    return setting.cryingMessage
+
+  },
+
+  diaperChangeEvent : function(){
+
+    return setting.diaperChangeMessage
+
+  },
+
+  nappingEvent : function(){
+
+    return setting.nappingMessage
 
   }
 

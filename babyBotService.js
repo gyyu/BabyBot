@@ -1,18 +1,19 @@
 const chatRecorder = require('./chatRecorder.js')
 const botStateRecorder = require('./botStateRecorder')
 const botSetting = require('./Settings/botSetting.json')
-const botState = require('./Settings/botState.json')
 const babyBot = require('./babyBot.js')
 
 
 const BabyBotService = {
+
+    events : ["cry", "diaper-change", "nap"],
     
     saveAndExit : function (){
             
         setTimeout(function() {
       
           botStateRecorder.backupState()
-          botState.age = babyBot.getCurrentAgeInDay()
+          let botState = babyBot.updateBotState()
           botStateRecorder.saveState(botState)
           chatRecorder.saveMsg()
           process.exit(1)
@@ -29,19 +30,18 @@ const BabyBotService = {
 
     getExitMessage : function(){
 
-        return botSetting.exitMessage
+        return babyBot.getExitingMessage()
 
     },
 
     getGreetingMessage : function(){
 
-        return botSetting.greetingMessage
+        return babyBot.getGreetingMessage()
 
     },
 
     executeCommand : function(cmdName, params){
-        console.log(cmdName)
-        console.log(cmdName==="growthReport")
+        
         switch(cmdName){
 
             case "growthReport":
@@ -50,10 +50,9 @@ const BabyBotService = {
 
             default:
 
-                return botSetting.noCommandFoundMessage
+                return babyBot.getCommandNotFoundMessage()
 
         }
-        
 
     },
 
@@ -69,8 +68,6 @@ const BabyBotService = {
 
             console.log("no weight")
             
-
-
         }
 
 
@@ -82,15 +79,31 @@ const BabyBotService = {
 
     },
 
+    getRandomEvent : function(){
+
+        let len = BabyBotService.events.length
+        let randInt = Math.floor((Math.random()* len))
+        let eventName = BabyBotService.events[randInt]
+
+        switch(eventName){
+
+            case "cry":
+
+                return babyBot.cryingEvent()
+
+            case "diaper-change":
+
+                return babyBot.diaperChangeEvent()
+
+            case "nap":
+
+                return babyBot.nappingEvent()
+        }
+
+
+    },
+
    
-
-
-
-
-
-
-
-    
 
 
 }

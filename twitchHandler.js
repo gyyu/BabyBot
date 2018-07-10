@@ -4,6 +4,7 @@ const setting = require('./Settings/connectionSetting.json')
 const opts = setting.opts
 
 let checkStreamIntervalID
+let getRandomEventIntervalID
 let parseMessage
 
 // Helper function to send the correct type of message:
@@ -43,6 +44,13 @@ function checkStreamIsOffLine() {
   }
 
 
+function callRandomEvent(){
+
+    eventMessage = babyBotService.getRandomEvent()
+    sendMessage(opts.channels[0], opts, eventMessage)
+    //clearInterval(getRandomEventIntervalID)
+}
+
 
 // Create a client with our options:
 let client = new tmi.client(opts)
@@ -73,7 +81,7 @@ function onJoinHandler(target, username,self){
 function onMessageHandler (target, context, msg, self) {
   
   let prefix = msg.substr(0,1)
-  let response
+  
   let chatMsg = `[${target} (${context['message-type']})] ${context.username}: ${msg}` //+ JSON.stringify(context)
   babyBotService.saveChatMessage(chatMsg)
   console.log(chatMsg)
@@ -137,6 +145,7 @@ function onConnectedHandler (addr, port ) {
 
   
   checkStreamIntervalID = setInterval(checkStreamIsOffLine, setting.checkOfflineInterval)
+  getRandomEventIntervalID = setInterval(callRandomEvent, setting.getRandomEventInterval)
 
 }
 
