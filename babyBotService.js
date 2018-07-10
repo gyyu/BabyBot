@@ -7,16 +7,6 @@ const babyBot = require('./babyBot.js')
 
 const BabyBotService = {
     
-    initializeBabyBot : function() {
-
-        babyBot.age = botState.age,
-        babyBot.secToYear = botState.secToYear,
-        babyBot.secToMonth = botState.secToMonth,
-        babyBot.secToDay = botState.secToDay
-        babyBot.startTime = (new Date).getTime()
-
-    },
-
     saveAndExit : function (){
             
         setTimeout(function() {
@@ -47,7 +37,60 @@ const BabyBotService = {
 
         return botSetting.greetingMessage
 
-    }
+    },
+
+    executeCommand : function(cmdName, params){
+        console.log(cmdName)
+        console.log(cmdName==="growthReport")
+        switch(cmdName){
+
+            case "growthReport":
+
+                return babyBot.getGrowthReport()
+
+            default:
+
+                return botSetting.noCommandFoundMessage
+
+        }
+        
+
+    },
+
+    learnFromMessage : function(msg, weighted){
+
+        if(weighted){
+
+            console.log("Weight each word")
+            
+
+        }else{
+
+
+            console.log("no weight")
+            
+
+
+        }
+
+
+    },
+
+    getResponse : function(msg){
+        console.log("getResponse")
+        return babyBot.getResponseToKeywords(msg)
+
+    },
+
+   
+
+
+
+
+
+
+
+    
 
 
 }

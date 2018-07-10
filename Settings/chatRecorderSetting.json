@@ -1,7 +1,7 @@
 {
 
     "recordCountToFlush" : 100,
-    "outputPath" : "./Output/"
+    "outputPath" : "./Outputs/"
     
 
 }

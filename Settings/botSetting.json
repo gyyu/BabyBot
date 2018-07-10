@@ -1,13 +1,19 @@
 {
     
-    "secToYear" : 720,
-    "secToMonth" : 30,
-    "secToDay" : 2,
+   
     "exitDelay" : 0,
+    "wordWeight" : 3,
 
     "greetingMessage" : "Hello, I'm babyBot. Please raise me.",
-    "noCommandFoundMsg" : "This is not a valid command.",
-    "exitMessage" : "That's it for today! Seeya!"
+    "noCommandFoundMessage" : "This is not a valid command.",
+    "exitMessage" : "That's it for today! Seeya!",
+
+    "commands" : [
+
+        "growthReport"
+    ]
+
+   
 
 
     

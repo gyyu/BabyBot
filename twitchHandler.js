@@ -3,6 +3,9 @@ const babyBotService = require('./babyBotService.js')
 const setting = require('./Settings/connectionSetting.json')
 const opts = setting.opts
 
+let checkStreamIntervalID
+let parseMessage
+
 // Helper function to send the correct type of message:
 function sendMessage (target, context, message) {
 
@@ -28,26 +31,18 @@ function checkStreamIsOffLine() {
         return 
       
       }else{
-        
-        exitMessage = babyBotService.getExitMessage()
-        sendMessage(opts.channels[0], opts, exitMessage)
-        babyBotService.saveAndExit()
-  
+
+          clearInterval(checkStreamIntervalID)
+          exitMessage = babyBotService.getExitMessage()
+          sendMessage(opts.channels[0], opts, exitMessage)
+          babyBotService.saveAndExit()
+    
       }
   
     });
   }
 
 
-  function checkKeywords(keyword,msg){
-
-    if(msg.includes(keyword)){
-  
-      sendMessage(opts.channels[0], opts, setting.responses[keyword])
-  
-    }
-  
-  }
 
 // Create a client with our options:
 let client = new tmi.client(opts)
@@ -77,46 +72,71 @@ function onJoinHandler(target, username,self){
 // Called every time a message comes in:
 function onMessageHandler (target, context, msg, self) {
   
-  let chatMsg = `[${target} (${context['message-type']})] ${context.username}: ${msg}` + JSON.stringify(context)
+  let prefix = msg.substr(0,1)
+  let response
+  let chatMsg = `[${target} (${context['message-type']})] ${context.username}: ${msg}` //+ JSON.stringify(context)
   babyBotService.saveChatMessage(chatMsg)
   console.log(chatMsg)
 
   // Ignore messages from the bot or messages that are not commands
-  if (self || msg.substr(0, 1) !== setting.commandPrefix) {return} 
+  if (self) {return} 
 
-  // Split the message into individual words:
-  const parse = msg.slice(1).split(' ')
-  // The command name is the first (0th) one:
-  const commandName = parse[0]
-  // The rest (if any) are the parameters:
-  const params = parse.splice(1)
-  
-  // If the command is known, let's execute it:
-  if (knownCommands[commandName]) {
-    
-    //get function 
-    const command = knownCommands[commandName]
-    command(target, context, params)
+  switch(prefix){
 
-    console.log(`* Executed ${commandName} command for ${context.username}`)
-  
-  } else {
-    
-    sendMessage(target, context, setting.noCommandFoundMsg)
-    console.log(`* Unknown command ${commandName} from ${context.username}`)
-  
+    case setting.commandPrefix:
+
+      parseMessage = msg.slice(1).split(' ')
+      
+      const commandName = parseMessage[0]
+      
+      commandMessage = babyBotService.executeCommand(commandName, parseMessage)
+      sendMessage(opts.channels[0], opts, commandMessage)
+
+      break
+
+    case setting.tagPrefix:
+      
+
+      parseMessage = msg.slice(1).split(' ')
+      const taggedUser = parseMessage[0]
+
+      if(taggedUser === opts.identity.username){
+
+        babyBotService.learnFromMessage(parseMessage, true)
+        
+
+      }else{
+
+
+        babyBotService.learnFromMessage(parseMessage, false)
+        
+
+      }
+
+      responseMessage = babyBotService.getResponse(parseMessage)
+      sendMessage(opts.channels[0], opts, responseMessage)
+      break
+
+    default:
+      console.log("Default")
+      parseMessage = msg.split(' ')
+      responseMessage = babyBotService.getResponse(parseMessage)
+      sendMessage(opts.channels[0], opts, responseMessage)
+
+
   }
+
+  
+
 }
 
 // Called every time the bot connects to Twitch chat:
-function onConnectedHandler (addr, port, ) {
+function onConnectedHandler (addr, port ) {
 
   console.log(`* Connected to ${addr}:${port}`)
 
   
-  babyBotService.initializeBabyBot()
-  
-  setInterval(checkStreamIsOffLine, setting.checkOfflineInterval)
+  checkStreamIntervalID = setInterval(checkStreamIsOffLine, setting.checkOfflineInterval)
 
 }
 

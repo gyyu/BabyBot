@@ -1,1 +1,25 @@
-{"age":0}
+{
+    "age":0,
+    "secToYear" : 720,
+    "secToMonth" : 30,
+    "secToDay" : 2,
+
+    "keywords" : {
+
+        "favorite" : {
+            "car" : ["BMW" , "Ford", "Benz" , "Honda", "Toyota", "Nissan", "Subaru"],
+            "fruit" : ["Cherry", "Apple"]
+
+        },
+
+        "dislike" : {
+
+
+
+        }
+
+    }
+
+
+
+}
