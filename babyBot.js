@@ -1,5 +1,7 @@
 const setting = require('./Settings/botState.json')
 
+let taggedCounter = 0; // used to measure the number of times the bot interacts, when it hits a certain number, it will take a nap 
+
 const BabyBot = {
 
   startTime : (new Date).getTime(),
@@ -129,6 +131,11 @@ const BabyBot = {
 
   nappingEvent : function(){
 
+    //startTime = Date.now();
+
+    //if (Date.now() - startTime > 300000)
+      //return setting.awakeMessage;
+    //else 
     return setting.nappingMessage
 
   }
