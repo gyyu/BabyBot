@@ -1,156 +1,100 @@
 const tmi = require('tmi.js')
-const babyBotService = require('./babyBotService.js')
 const setting = require('./Settings/connectionSetting.json')
 const opts = setting.opts
 
-let checkStreamIntervalID
-let getRandomEventIntervalID
-let parseMessage
-
-// Helper function to send the correct type of message:
-function sendMessage (target, context, message) {
-
-    if (context['message-type'] === 'whisper') {
-      client.whisper(target, message)
-    } else {
-      client.say(target, message)
-    }
-}
-
-function checkStreamIsOffLine() {
-        
-    client.api({
-      
-      url : setting.channelUrl, headers : setting.headers
+class TwitchHandler {
   
-    }, function(err, res, body){
-  
-      console.log(body.stream)
-  
-      if(body.stream){ 
-        
-        return 
-      
-      }else{
+  constructor () {
 
-          clearInterval(checkStreamIntervalID)
-          exitMessage = babyBotService.getExitMessage()
-          sendMessage(opts.channels[0], opts, exitMessage)
-          babyBotService.saveAndExit()
+  }
+
+  initialize(botChannelRef){
+
     
+    this.babyBotChannel = botChannelRef
+
+   
+    // Create a client with our options:
+    let client = new tmi.client(opts)
+
+    // Register our event handlers (defined below):
+    client.on('message', this.onMessageHandler.bind(this))
+    client.on('connected', this.onConnectedHandler.bind(this))
+    client.on('disconnected', this.onDisconnectedHandler.bind(this))
+    client.on('join', this.onJoinHandler.bind(this))
+
+    // Connect to Twitch:
+    client.connect()
+
+    this.client = client
+    
+  }
+
+  // // Helper to send the correct type of message:
+  sendMessage (target, messageType, message) {
+
+    if(target === ""){
+
+      target = opts.channels[0]
+    }
+    
+    if (messageType === 'whisper') {
+      this.client.whisper(target, message)
+    } else {
+      
+      this.client.say(target, message)
+    }
+  }
+
+  checkStreamIsOffLine () {
+    this.client.api({
+      url: setting.channelUrl, headers: setting.headers
+
+    }, function (err, res, body) {
+      console.log(body.stream)
+
+      if (body.stream) {
+        return
+      }else {
+        clearInterval(this.checkStreamIntervalID)
+        exitMessage = babyBotService.getExitMessage()
+        sendMessage(opts.channels[0], opts, exitMessage)
+        babyBotService.saveAndExit()
       }
-  
-    });
+    })
   }
 
+  onJoinHandler (target, username, self) {
 
-function callRandomEvent(){
+    if (self) {
+      this.babyBotChannel.onJoinSuccessful(target)
+    }
 
-    eventMessage = babyBotService.getRandomEvent()
-    sendMessage(opts.channels[0], opts, eventMessage)
-    //clearInterval(getRandomEventIntervalID)
-}
+    console.log(username + ' enters the chat')
+  }
 
+  // // Called every time a message comes in:
+  onMessageHandler (target, context, msg, self) {
+  
+    this.babyBotChannel.toBot( target, context, msg, self)
+    
+  }
 
-// Create a client with our options:
-let client = new tmi.client(opts)
+  // Called every time the bot connects to Twitch chat:
+  onConnectedHandler (addr, port) {
 
-// Register our event handlers (defined below):
-client.on('message', onMessageHandler)
-client.on('connected', onConnectedHandler)
-client.on('disconnected', onDisconnectedHandler)
-client.on("join", onJoinHandler)
-
-// Connect to Twitch:
-client.connect()
-
-function onJoinHandler(target, username,self){
-
-  if (self){
-
-    greetingMessage = babyBotService.getGreetingMessage()
-    sendMessage(opts.channels[0], opts, greetingMessage)
+    console.log(`* Connected to ${addr}:${port}`)
 
   }
 
-  console.log(username + " enters the chat")
+  // Called every time the bot disconnects from Twitch:
+  onDisconnectedHandler (reason) {
 
-}
-
-// Called every time a message comes in:
-function onMessageHandler (target, context, msg, self) {
-  
-  let prefix = msg.substr(0,1)
-  
-  let chatMsg = `[${target} (${context['message-type']})] ${context.username}: ${msg}` //+ JSON.stringify(context)
-  babyBotService.saveChatMessage(chatMsg)
-  console.log(chatMsg)
-
-  // Ignore messages from the bot or messages that are not commands
-  if (self) {return} 
-
-  switch(prefix){
-
-    case setting.commandPrefix:
-
-      parseMessage = msg.slice(1).split(' ')
-      
-      const commandName = parseMessage[0]
-      
-      commandMessage = babyBotService.executeCommand(commandName, parseMessage)
-      sendMessage(opts.channels[0], opts, commandMessage)
-
-      break
-
-    case setting.tagPrefix:
-      
-
-      parseMessage = msg.slice(1).split(' ')
-      const taggedUser = parseMessage[0]
-
-      if(taggedUser === opts.identity.username){
-
-        babyBotService.learnFromMessage(parseMessage, true)
-        
-
-      }else{
-
-
-        babyBotService.learnFromMessage(parseMessage, false)
-        
-
-      }
-
-      responseMessage = babyBotService.getResponse(parseMessage)
-      sendMessage(opts.channels[0], opts, responseMessage)
-      break
-
-    default:
-      console.log("Default")
-      parseMessage = msg.split(' ')
-      responseMessage = babyBotService.getResponse(parseMessage)
-      sendMessage(opts.channels[0], opts, responseMessage)
-
-
+    console.log(`Womp womp, disconnected: ${reason}`)
+   
   }
 
-  
-
 }
 
-// Called every time the bot connects to Twitch chat:
-function onConnectedHandler (addr, port ) {
+module.exports = TwitchHandler
 
-  console.log(`* Connected to ${addr}:${port}`)
-
-  
-  checkStreamIntervalID = setInterval(checkStreamIsOffLine, setting.checkOfflineInterval)
-  getRandomEventIntervalID = setInterval(callRandomEvent, setting.getRandomEventInterval)
-
-}
-
-// Called every time the bot disconnects from Twitch:
-function onDisconnectedHandler (reason) {
-  console.log(`Womp womp, disconnected: ${reason}`)
-  babyBotService.saveAndExit()
-}

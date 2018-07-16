@@ -1,0 +1,40 @@
+{
+
+    "messageInterval" : 1000,
+    "cryingMessage" : "Waaaaa Waaaaa WAAAAAAAAAA",
+    "response": {
+
+        "Feed" : {
+
+            "0" : [":(" , ":/"],
+            "1" : ["NO", "NoNoNo"],
+            "2" : ["Don't want to eat"]
+
+
+        },
+
+        "Change" :{
+
+            "0" : [":(!!!" , ":/!!!!"],
+            "1" : ["NO!!", "NoNoNo!!!"],
+            "2" : ["Don't want to change"]
+
+
+        },
+
+        "Hold" : {
+
+            "0" : [":(!!!" , ":/!!!!"],
+            "1" : ["NO!!", "NoNoNo!!!"],
+            "2" : ["Don't want to change"]
+
+
+        }
+
+
+
+    }
+
+
+
+}

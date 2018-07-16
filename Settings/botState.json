@@ -1,14 +1,20 @@
 {
+    "username" : "sakanatest",
+    
     "age":0,
     "secToYear" : 720,
     "secToMonth" : 30,
     "secToDay" : 2,
 
+    "stateNames" : ["Crying", "Napping", "Diaper-Changing", "Normal"],
+
+    "commandPrefix" : "!",
+    "tagPrefix" : "@",
 
     "greetingMessage" : "Hello, I'm babyBot. Please raise me.",
     "noCommandFoundMessage" : "This is not a valid command.",
     "exitMessage" : "That's it for today! Seeya!",
-    "cryingMessage" : "Waaaaa Waaaaa WAAAAAAAAAA",
+   
     "diaperChangeMessage" : "Change My DIAPER",
     "nappingMessage" : "I want bedtime story",
 

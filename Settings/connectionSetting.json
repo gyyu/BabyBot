@@ -4,8 +4,6 @@
     "getRandomEventInterval" : 50000,
     
     
-    "commandPrefix" : "!",
-    "tagPrefix" : "@",
     "channelUrl" : "https://api.twitch.tv/kraken/streams/kisakana",
     "headers" : {
         "Client-ID" : "fc9g5vx67vel9jme7vd0kvfqueqrj5"
