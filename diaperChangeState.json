@@ -1,13 +1,15 @@
 {
 
-    "messageInterval" : 30000,
-    "cryingMessage" : "Waaaaa Waaaaa WAAAAAAAAAA",
+    "eventInterval" : [1000,3000,5000],
+    "cryingMessage" : "Change My diaper",
+    "messageInterval" : 50000,
+
     "response": {
 
         "Feed" : {
 
             "0" : [":(" , ":/"],
-            "1" : ["NO", "NoNoNo"],
+            "1" : ["Not hungry", "Don't want to eat"],
             "2" : ["Don't want to eat"]
 
 
@@ -27,6 +29,17 @@
             "0" : [":(!!!" , ":/!!!!"],
             "1" : ["NO!!", "NoNoNo!!!"],
             "2" : ["Don't want to change"]
+
+
+        },
+
+        "NoCommandFound" : {
+
+
+            "0" : ["NoCommandFound" , "NoCommandFound"],
+            "1" : ["NoCommandFound", "NoCommandFound"],
+            "2" : ["NoCommandFound"]
+
 
 
         }

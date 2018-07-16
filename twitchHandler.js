@@ -13,7 +13,6 @@ class TwitchHandler {
     
     this.babyBotChannel = botChannelRef
 
-   
     // Create a client with our options:
     let client = new tmi.client(opts)
 
@@ -32,11 +31,12 @@ class TwitchHandler {
 
   // // Helper to send the correct type of message:
   sendMessage (target, messageType, message) {
+    // console.log("Sending message" + message)
+    // if(target === ""){
 
-    if(target === ""){
-
-      target = opts.channels[0]
-    }
+    //   target = opts.channels[0]
+    
+    // }
     
     if (messageType === 'whisper') {
       this.client.whisper(target, message)

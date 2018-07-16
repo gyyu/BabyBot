@@ -1,4 +1,4 @@
-const normalResponse = require('./normalResponse.json')
+const normalState = require('./normalState.json')
 
 
 class NormalState {
@@ -6,7 +6,11 @@ class NormalState {
     constructor (botRef) {
   
       this.botRef = botRef
-      this.normalResponse = normalResponse.response
+      this.normalResponse = normalState.response
+
+      let len = normalState.eventInterval.length
+      let ran = Math.floor(Math.random()* len)
+      setTimeout(this.botRef.changeState.bind(this.botRef), normalState.eventInterval[ran])
     }
   
     onCommand (cmdName) {
@@ -23,20 +27,14 @@ class NormalState {
       let listLength = this.normalResponse[cmdName][ageGroup].length
       let ranNum = Math.floor(Math.random() * listLength)
   
-      response = this.normalResponse[cmdName][ageGroup][ranNum]
+      response = this.normalResponse[cmdName][ageGroup][ranNum] 
+      return ['chat', response]
+          
       
-      if (cmdName === 'Hold') {
-          
-          return ['whisper', response]
-          
-      }else {
-          
-          return ['chat', response]
-          
-      }
     }
     
       
+    clearMessageInterval(){}
   
   }
 

@@ -1,166 +1,235 @@
 const setting = require('./Settings/botState.json')
-const lists = require('./Settings/botLists.json')
+const chatRecorder = require('./chatRecorder.js')
+const NormalState = require('./babyBotNormalState.js')
+const CryingState = require('./babyBotCryingState.js')
+const NappingState = require('./babyBotNappingState.js')
+const DiaperChangingState = require('./babyBotDiaperChangingState.js')
 
-let taggedCounter = 0; // used to measure the number of times the bot interacts, when it hits a certain number, it will take a nap 
-let goodbyeList = lists.botLists["possible"]["goodbye"]; 
-let cursewordList = lists.botLists["possible"]["cursewords"]
+class BabyBot {
 
-const BabyBot = {
+  constructor (botRef) {
+    this.currentState = new NormalState(this)
+    this.startTime = (new Date).getTime()
+    this.beginingAge = setting.age
+    this.secToYear = setting.secToYear
+    this.secToMonth = setting.secToMonth
+    this.secToDay = setting.secToDay
+    this.held = false
+    this.babyBotChannel = botRef
 
-  startTime : (new Date).getTime(),
-  beginingAge : setting.age,
-  secToYear : setting.secToYear,
-  secToMonth : setting.secToMonth,
-  secToDay : setting.secToDay,
+  }
 
+  changeState () {
 
+    this.currentState.clearMessageInterval()
+    let len = setting.stateNames.length
+    let ran = Math.floor(Math.random() * len)
+    let stateName = setting.stateNames[ran]
+    console.log(stateName)
 
-  updateBotState : function(){
+    switch (stateName) {
+      case 'Crying':
 
-    setting.age = BabyBot.getCurrentAgeInDay()
-   
-    return setting
+        this.currentState = new CryingState(this)
+        break
 
-  },
+      case 'Napping':
 
-  getAgeInYMD : function (){
+        this.currentState = new NappingState(this)
+        break
 
-    let currentAge = BabyBot.getCurrentAgeInDay()
-    
-    let currentAgeInYear = Math.floor(currentAge / BabyBot.secToYear)
-    let remainMonth = currentAge - currentAgeInYear * BabyBot.secToYear
+      case 'Diaper-Changing':
 
-    let currentAgeInMonth = Math.floor(remainMonth / BabyBot.secToMonth)
-    let remainDay = remainMonth - currentAgeInMonth * BabyBot.secToMonth
+        this.currentState = new DiaperChangingState(this)
+        break
 
-    let currentAgeInDay = Math.floor((remainDay % BabyBot.secToMonth))
+      case 'Normal':
 
-    console.log(currentAgeInYear + " " + currentAgeInMonth + " " + currentAgeInDay)
+        this.currentState = new NormalState(this)
+        break
+
+    }
+  }
+
+  getCurrentAgeInDay () {
+    let currentTime = (new Date).getTime()
+    let ageInSeconds = (currentTime - this.startTime) / 1000
+
+    let ageInDay = Math.round(ageInSeconds / this.secToDay)
+    let currentAge = this.beginingAge + ageInDay
+
+    return currentAge
+  }
+
+  getAgeInYMD () {
+    let currentAge = this.getCurrentAgeInDay()
+
+    let currentAgeInYear = Math.floor(currentAge / secToYear)
+    let remainMonth = currentAge - currentAgeInYear * secToYear
+
+    let currentAgeInMonth = Math.floor(remainMonth / secToMonth)
+    let remainDay = remainMonth - currentAgeInMonth * secToMonth
+
+    let currentAgeInDay = Math.floor((remainDay % secToMonth))
+
+    console.log(currentAgeInYear + ' ' + currentAgeInMonth + ' ' + currentAgeInDay)
 
     return [currentAgeInYear, currentAgeInMonth, currentAgeInDay]
-  },
+  }
 
-  getCurrentAgeInDay : function(){
+  getCommandResponse (cmd) {
 
-    let currentTime = (new Date).getTime()
-    let ageInSeconds =  (currentTime - BabyBot.startTime) / 1000
+    return this.currentState.onCommand(cmd)
 
-    let ageInDay = Math.round(ageInSeconds / BabyBot.secToDay)
-    let currentAge = BabyBot.beginingAge + ageInDay
+}
+
+  onJoin(channelName){
+
     
-    return currentAge
-  },
+    this.babyBotChannel.toHandler(channelName, '', setting.greetingMessage)
 
-  getGreetingMessage : function(){
+  }
 
-    return setting.greetingMessage
 
-  },
+  onMessage ( channelName, context, msg, self) {
 
-  getCommandNotFoundMessage : function() {
+      let chatMsg = `[${channelName} (${context['message-type']})] ${context.username}: ${msg}` // + JSON.stringify(context)
+      // saveChatMessage(chatMsg)
+      console.log(chatMsg)
 
-    return setting.noCommandFoundMessage
+      let msgType = context["message-type"]
 
-  },
+      // Ignore messages from the bot
+      if (self) {return}
 
-  getExitingMessage : function() {
+      if(msgType === "chat"){
 
-    return setting.exitMessage
+        let prefix = msg.substr(0, 1)
+        let parseMessage
+        let commandResponse
 
-  },
+        if (prefix === setting.commandPrefix) {
 
-  getGrowthReport : function(){
+            parseMessage = msg.slice(1).split(' ')
+            const commandName = parseMessage[0]
+            commandResponse = this.getCommandResponse(commandName)
 
-    let ageYMD = BabyBot.getAgeInYMD()
-    
-    reportMessage = "I'm " + ageYMD[0] + "-year " + ageYMD[1] + "-month and " + ageYMD[2] + "-day old!"
-  
-    return reportMessage
-  
-  },
+            if (commandResponse[0] === 'whisper') {
 
-  getResponseToKeywords : function(msg){
+                this.babyBotChannel.toHandler(context.username, commandResponse[0], commandResponse[1])
 
+            }else {
+
+                this.babyBotChannel.toHandler(channelName, commandResponse[0], commandResponse[1])
+
+            }
+
+        }else if (prefix === setting.tagPrefix) {
+
+            parseMessage = msg.slice(1).split(' ')
+            const taggedUser = parseMessage[0]
+
+            if (taggedUser === setting.username) {
+
+                this.learnFromMessage(parseMessage, true)
+
+            }else {
+
+                this.learnFromMessage(parseMessage, false)
+
+            }
+
+            responseMessage = this.getResponseToKeywords(parseMessage)
+            this.babyBotChannel.toHandler(channelName,responseMessage[0], responseMessage[1])
+
+        }else {
+
+            console.log(msg)
+
+        }
+        
+    }else{
+
+    }
+          
+  }
+
+
+  saveChatMessage (msg) {
+    chatRecorder.storeMsg(msg)
+  }
+
+  learnFromMessage (msg, weighted) {
+    if (weighted) {
+      console.log('Weight each word')
+    }else {
+      console.log('no weight')
+    }
+  }
+
+  getResponseToKeywords (msg) {
     console.log(msg)
     let response = "I don't understand"
     let keywords = setting.keywords
     let firstWord
     let secondWord
 
-    for(i = 0; i < msg.length; i++){
-
+    for (var i = 0; i < msg.length; i++) {
       firstWord = msg[i]
 
-      // This code loops through goodbye list and if it encounters a word from that list in the user's message, someone is saying 
-      // goodbye so the bot should say something too. We would have to do this for every list so I'm trying to find a simpler way of doing it. 
-      for ( var e = 0; e < goodbyeList.length; e++ ) {
-        if ( msg[i] === goodbyeList[e]) {
-          console.log("no don't leave me");
-        } 
-      }
-      
-      for ( var e = 0; e < cursewordList.length; e++ ) {
-      if ( msg[i] === cursewordList[e]) {
-        console.log(msg[i] + "?");
-        } 
-      }
-      
-      if(keywords[firstWord] && i+1 <= msg.length){
-      
-        secondWord = msg[i+1]
-      
-        if(keywords[firstWord][secondWord]){
+    //   // This code loops through goodbye list and if it encounters a word from that list in the user's message, someone is saying 
+    //   // goodbye so the bot should say something too. We would have to do this for every list so I'm trying to find a simpler way of doing it. 
+    //   for ( var e = 0; e < goodbyeList.length; e++) {
+    //     if (msg[i] === goodbyeList[e]) {
+    //       console.log("no don't leave me")
+    //     }
+    //   }
 
+    //   for ( var e = 0; e < cursewordList.length; e++) {
+    //     if (msg[i] === cursewordList[e]) {
+    //       console.log(msg[i] + '?')
+    //     }
+    //   }
+
+      if (keywords[firstWord] && i + 1 <= msg.length) {
+        secondWord = msg[i + 1]
+
+        if (keywords[firstWord][secondWord]) {
           let arrLen = keywords[firstWord][secondWord].length
           let randomNumber = Math.floor((Math.random() * arrLen))
           response = keywords[firstWord][secondWord][randomNumber]
-          
-        }else{
-
-          response = firstWord + " what?"
-
+        }else {
+          response = firstWord + ' what?'
         }
-
-      }else{
-
-        response = firstWord + " what?"
-
+      }else {
+        response = firstWord + ' what?'
       }
-
-
     }
-    
+
     return response
-    
-
-  },
-  cryingEvent : function(){
-
-    // This function, diaper function, and nap function should all be on random timers. Below code might help with that.
-    // var timers = [300000, 600000, 900000];
-    // var randomTime = timers[Math.floor(Math.random() * timers.length)];   
-
-    return setting.cryingMessage
-
-  },
-
-  diaperChangeEvent : function(){
-
-    return setting.diaperChangeMessage
-
-  },
-
-  nappingEvent : function(){
-
-    //startTime = Date.now();
-
-    //if (Date.now() - startTime > 300000)
-      //return setting.awakeMessage;
-    //else 
-    return setting.nappingMessage
-
   }
 
+
+  getAgeGroup(){
+
+    let ageInDay = this.getCurrentAgeInDay()
+
+    if (0 <= ageInDay < 720) {
+
+        return "0"
+               
+    }else if (720 <= ageInDay < 1440) {
+  
+        return "1"
+
+    }else if (1440 < ageInDay) {
+
+
+        return "2"
+
+    }
+
+  }
 
 }
 

@@ -7,7 +7,7 @@ class CryingState {
 
     this.botRef = botRef
     this.cryingResponse = cryState.response
-    this.cryingInterval = setInterval(this.sendCryingMessage.bind(this), cryState.messageInterval)
+    this.cryingIntervalID = setInterval(this.sendCryingMessage.bind(this), cryState.messageInterval)
 }
 
   onCommand (cmdName) {
@@ -18,6 +18,12 @@ class CryingState {
     if(!this.cryingResponse[cmdName]){
             
         cmdName = "NoCommandFound"
+
+    }
+
+    if(cmdName === 'Hold'){
+
+      this.clearMessageInterval()
 
     }
 
@@ -44,6 +50,11 @@ class CryingState {
 
   }
 
+  clearMessageInterval(){
+
+    clearInterval(this.cryingIntervalID)
+
+  }
 }
 
 module.exports = CryingState
