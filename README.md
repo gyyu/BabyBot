@@ -1,29 +1,54 @@
 # BabyBot
 
+## main.js
+- Create class objects of the program
+- Initialize each class
+
 ## twitchHandler.js
 - Handles connection with Twitch
-- Sends request to BabyBotService.js to get response from babyBot
+- Sends chat message to babyBotChannel.js to get response from babyBot
 
 ### connectionSetting.json
 - Contains connection setting to Twitch
 - Defines message parsing symbols
 - Defines interval for calling functions
 
-## babyBotService.js
-- Handles reqest from twitchHandler.js
-- Sends request to babyBot to get response/actions
-
-### botSetting.json
-- Defines commands the bot has
-- Defines exit delay
-- Defines word weight
+## babyBotChannel.js
+- Facilitates communication between babyBot and twitchHandler
+- setMethods acts as a registrator which registers methods from babyBot and twitchHandler to be used
 
 ## babyBot.js
-- the core logic of the bot
-- stores bot state and information
-- person actions(crying, needs nap...etc.)
+- The core logic of the bot
+- Stores bot information
+- Switches between states based on event
 
 ### botState.json
 - Defines bot age conversion rule
 - Stores bot age
-- Store words learned
+- Stores available states
+- Stores bot username
+- Stores words learned
+
+### babyBotNormalState.js
+### normalState.json
+- Normal state of the bot
+
+### babyBotCryingState.js
+#### cyringState.json
+- Crying state of the bot
+- Will keep on sending crying message until users use Hold command
+- Sends whisper to the user who used the Hold command
+- Goes back to Normal state once the bot is calm
+
+### babyBotNappingState.js
+#### nappingState.json
+- Napping state of the bot
+- Does not respond to any message for a period of time
+- Goes back to Normal state once the bot is awake
+
+### babyBotDiaperChangingState.js
+#### diaperChangeState.json
+- Needs to change diaper
+- Will keep on sending request until users used the Change command
+- Goes back to Normal state once the diaper is changed
+
