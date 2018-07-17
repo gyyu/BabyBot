@@ -4,7 +4,11 @@ const NormalState = require('./babyBotNormalState.js')
 const CryingState = require('./babyBotCryingState.js')
 const NappingState = require('./babyBotNappingState.js')
 const DiaperChangingState = require('./babyBotDiaperChangingState.js')
+const lists = require('./Settings/botLists.json')
 
+let taggedCounter = 0; // used to measure the number of times the bot interacts, when it hits a certain number, it will take a nap 
+let goodbyeList = lists.botLists["possible"]["goodbye"]; 
+let cursewordList = lists.botLists["possible"]["cursewords"]
 class BabyBot {
 
   constructor (botRef) {
@@ -184,17 +188,17 @@ class BabyBot {
 
     //   // This code loops through goodbye list and if it encounters a word from that list in the user's message, someone is saying 
     //   // goodbye so the bot should say something too. We would have to do this for every list so I'm trying to find a simpler way of doing it. 
-    //   for ( var e = 0; e < goodbyeList.length; e++) {
-    //     if (msg[i] === goodbyeList[e]) {
-    //       console.log("no don't leave me")
-    //     }
-    //   }
+      for ( var e = 0; e < goodbyeList.length; e++) {
+        if (msg[i] === goodbyeList[e]) {
+          console.log("no don't leave me")
+        }
+      }
 
-    //   for ( var e = 0; e < cursewordList.length; e++) {
-    //     if (msg[i] === cursewordList[e]) {
-    //       console.log(msg[i] + '?')
-    //     }
-    //   }
+      for ( var e = 0; e < cursewordList.length; e++) {
+        if (msg[i] === cursewordList[e]) {
+          console.log(msg[i] + '?')
+        }
+      }
 
       if (keywords[firstWord] && i + 1 <= msg.length) {
         secondWord = msg[i + 1]
