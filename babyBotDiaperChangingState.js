@@ -1,4 +1,4 @@
-const diaperChangeState = require('./diaperChangeState.json')
+const diaperChangeState = require('./Settings/diaperChangeState.json')
 
 
 class DiaperChangingState {

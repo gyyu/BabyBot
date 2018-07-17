@@ -1,4 +1,4 @@
-const napState = require('./nappingState.json')
+const napState = require('./Settings/nappingState.json')
 
 
 class NappingState {

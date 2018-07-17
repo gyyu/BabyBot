@@ -1,4 +1,4 @@
-const cryState = require('./cryingState.json')
+const cryState = require('./Settings/cryingState.json')
 
 
 class CryingState {

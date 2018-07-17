@@ -1,4 +1,4 @@
-const normalState = require('./normalState.json')
+const normalState = require('./Settings/normalState.json')
 
 
 class NormalState {
