@@ -1,7 +1,9 @@
 {
 
-    "messageInterval" : 30000,
+    "messageInterval" : 10000,
+    "stateDuration" : 10000,
     "cryingMessage" : "Waaaaa Waaaaa WAAAAAAAAAA",
+    "endingMessage" : "I feel better now",
     "response": {
 
         "Feed" : {
@@ -29,8 +31,18 @@
             "2" : ["Don't want to change"]
 
 
-        }
+        },
 
+        "NoCommandFound" : {
+
+
+            "0" : ["NoCommandFound" , "NoCommandFound"],
+            "1" : ["NoCommandFound", "NoCommandFound"],
+            "2" : ["NoCommandFound"]
+
+
+
+        }
 
 
     }

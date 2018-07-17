@@ -21,7 +21,6 @@ class BabyBot {
 
   changeState () {
 
-    this.currentState.clearMessageInterval()
     let len = setting.stateNames.length
     let ran = Math.floor(Math.random() * len)
     let stateName = setting.stateNames[ran]
@@ -49,6 +48,18 @@ class BabyBot {
         break
 
     }
+  }
+
+  changeToNormalState(){
+
+    
+    if(!(this.currentState instanceof NormalState)){
+      console.log("Normal State")
+      this.currentState = new NormalState(this)
+
+    }
+    
+
   }
 
   getCurrentAgeInDay () {
@@ -98,7 +109,7 @@ class BabyBot {
       console.log(chatMsg)
 
       let msgType = context["message-type"]
-
+      this.commandUser = context.username
       // Ignore messages from the bot
       if (self) {return}
 
@@ -149,7 +160,7 @@ class BabyBot {
         }
         
     }else{
-
+      //from whisper
     }
           
   }

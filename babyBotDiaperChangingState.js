@@ -7,18 +7,17 @@ class DiaperChangingState {
 
     this.botRef = botRef
     this.diaperChangeResponse = diaperChangeState.response
-    //this.requestChangingIntervalID = setInterval(this.sendCryingMessage.bind(this), diaperChangeState.messageInterval)
+    this.requestChangingIntervalID = setInterval(this.requestDiaperChangeMessage.bind(this), diaperChangeState.messageInterval)
     
     let len = diaperChangeState.eventInterval.length
     let ran = Math.floor(Math.random()* len)
-    setTimeout(this.botRef.changeState.bind(this.botRef), diaperChangeState.eventInterval[ran])
+    setTimeout(this.botRef.changeToNormalState.bind(this.botRef), diaperChangeState.eventInterval[ran])
 }
 
   onCommand (cmdName) {
 
     let ageGroup = this.botRef.getAgeGroup()
-    let response
-
+    
     if(!this.diaperChangeResponse[cmdName]){
             
         cmdName = "NoCommandFound"
@@ -28,31 +27,22 @@ class DiaperChangingState {
     let listLength = this.diaperChangeResponse[cmdName][ageGroup].length
     let ranNum = Math.floor(Math.random() * listLength)
 
-    response = this.diaperChangeResponse[cmdName][ageGroup][ranNum]
+    let response = this.diaperChangeResponse[cmdName][ageGroup][ranNum]
 
-    if (cmdName === 'Hold') {
-        
-        return ['whisper', response]
-        
-    }else {
-        
-        return ['chat', response]
-        
+    if (cmdName === 'Change') {
+        clearInterval(this.requestChangingIntervalID)
+        this.botRef.changeToNormalState()      
     }
+
+    return ["chat", response]
   }
 
-  sendCryingMessage(){
+  requestDiaperChangeMessage(){
 
     this.botRef.babyBotChannel.toHandler("","",diaperChangeState.cryingMessage)
 
-
   }
 
-  clearMessageInterval(){
-
-    
-
-  }
 }
 
 module.exports = DiaperChangingState

@@ -22,8 +22,11 @@ class CryingState {
     }
 
     if(cmdName === 'Hold'){
-
-      this.clearMessageInterval()
+        
+        this.holder = this.botRef.commandUser
+        clearInterval(this.cryingIntervalID)
+        console.log("Stoped crying")
+        setTimeout(this.endingCryingState.bind(this), cryState.stateDuration)
 
     }
 
@@ -33,7 +36,7 @@ class CryingState {
     response = this.cryingResponse[cmdName][ageGroup][ranNum]
 
     if (cmdName === 'Hold') {
-        
+
         return ['whisper', response]
         
     }else {
@@ -47,14 +50,15 @@ class CryingState {
 
     this.botRef.babyBotChannel.toHandler("","",cryState.cryingMessage)
 
+  }
+
+  endingCryingState(){
+
+    this.botRef.babyBotChannel.toHandler(this.holder,"whisper",cryState.endingMessage)
+    this.botRef.changeToNormalState()
 
   }
 
-  clearMessageInterval(){
-
-    clearInterval(this.cryingIntervalID)
-
-  }
 }
 
 module.exports = CryingState
