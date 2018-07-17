@@ -30,7 +30,7 @@
 - Stores words learned
 
 ### babyBotNormalState.js
-### normalState.json
+#### normalState.json
 - Normal state of the bot
 
 ### babyBotCryingState.js
