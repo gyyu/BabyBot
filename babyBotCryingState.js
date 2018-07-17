@@ -21,7 +21,7 @@ class CryingState {
 
     }
 
-    if(cmdName === 'Hold'){
+    if(cmdName === 'Hold' && !this.holder){
         
         this.holder = this.botRef.commandUser
         clearInterval(this.cryingIntervalID)
