@@ -125,15 +125,9 @@ class BabyBot {
             const commandName = parseMessage[0]
             commandResponse = this.getCommandResponse(commandName)
 
-            if (commandResponse[0] === 'whisper') {
+            this.babyBotChannel.toHandler(commandResponse[0], commandResponse[1], commandResponse[2])
 
-                this.babyBotChannel.toHandler(context.username, commandResponse[0], commandResponse[1])
-
-            }else {
-
-                this.babyBotChannel.toHandler(channelName, commandResponse[0], commandResponse[1])
-
-            }
+            
 
         }else if (prefix === setting.tagPrefix) {
 

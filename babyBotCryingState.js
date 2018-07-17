@@ -27,23 +27,28 @@ class CryingState {
         clearInterval(this.cryingIntervalID)
         console.log("Stoped crying")
         setTimeout(this.endingCryingState.bind(this), cryState.stateDuration)
+        let listLength = this.cryingResponse[cmdName][ageGroup].length
+        let ranNum = Math.floor(Math.random() * listLength)
+
+        response = this.cryingResponse[cmdName][ageGroup][ranNum]
+
+        return [this.holder,'whisper', response]
+
+    }else if(cmdName !== 'Hold'){
+        
+        let listLength = this.cryingResponse[cmdName][ageGroup].length
+        let ranNum = Math.floor(Math.random() * listLength)
+
+        response = this.cryingResponse[cmdName][ageGroup][ranNum]
+
+  
+        return ['','chat', response]
 
     }
 
-    let listLength = this.cryingResponse[cmdName][ageGroup].length
-    let ranNum = Math.floor(Math.random() * listLength)
-
-    response = this.cryingResponse[cmdName][ageGroup][ranNum]
-
-    if (cmdName === 'Hold') {
-
-        return ['whisper', response]
+    
         
-    }else {
-        
-        return ['chat', response]
-        
-    }
+    
   }
 
   sendCryingMessage(){
