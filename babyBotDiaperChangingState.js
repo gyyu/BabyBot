@@ -9,9 +9,6 @@ class DiaperChangingState {
     this.diaperChangeResponse = diaperChangeState.response
     this.requestChangingIntervalID = setInterval(this.requestDiaperChangeMessage.bind(this), diaperChangeState.messageInterval)
     
-    let len = diaperChangeState.eventInterval.length
-    let ran = Math.floor(Math.random()* len)
-    setTimeout(this.botRef.changeToNormalState.bind(this.botRef), diaperChangeState.eventInterval[ran])
 }
 
   onCommand (cmdName) {

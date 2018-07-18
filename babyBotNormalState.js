@@ -32,9 +32,7 @@ class NormalState {
           
       
     }
-    
-      
-    clearMessageInterval(){}
+        
   
   }
 
