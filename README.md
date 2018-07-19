@@ -64,5 +64,5 @@
 - Goes back to Normal state once the diaper is changed
 
 ### Bot Flow Diagram
-!(https://github.com/ihwang1/BabyBot/blob/master/Design/BabyBot%20Flow.jpg)
+![alt text](https://github.com/ihwang1/BabyBot/blob/master/Design/BabyBot%20Flow.jpg "BabyBot Flow Chart")
 
