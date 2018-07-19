@@ -31,7 +31,7 @@ class DiaperChangingState {
         this.botRef.changeToNormalState()      
     }
 
-    return ["chat", response]
+    return ["","chat", response]
   }
 
   requestDiaperChangeMessage(){

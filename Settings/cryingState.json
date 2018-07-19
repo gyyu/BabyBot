@@ -1,7 +1,7 @@
 {
 
     "messageInterval" : 10000,
-    "stateDuration" : 10000,
+    "requiredHoldingTime" : 100000,
     "cryingMessage" : "Waaaaa Waaaaa WAAAAAAAAAA",
     "endingMessage" : "I feel better now",
     "response": {

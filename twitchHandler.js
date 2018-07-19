@@ -58,7 +58,7 @@ class TwitchHandler {
       }else {
         clearInterval(this.checkStreamIntervalID)
         exitMessage = babyBotService.getExitMessage()
-        sendMessage(opts.channels[0], opts, exitMessage)
+        //sendMessage(opts.channels[0], opts, exitMessage)
         babyBotService.saveAndExit()
       }
     })

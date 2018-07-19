@@ -27,7 +27,7 @@ class NappingState {
     let ranNum = Math.floor(Math.random() * listLength)
 
     response = this.napingResponse[cmdName][ageGroup][ranNum]
-    return ['chat', response]
+    return ['','chat', response]
         
   }
 

@@ -28,7 +28,7 @@ class NormalState {
       let ranNum = Math.floor(Math.random() * listLength)
   
       response = this.normalResponse[cmdName][ageGroup][ranNum] 
-      return ['chat', response]
+      return ['','chat', response]
           
       
     }

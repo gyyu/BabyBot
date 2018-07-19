@@ -55,14 +55,12 @@ class BabyBot {
   }
 
   changeToNormalState(){
-
-    
+ 
     if(!(this.currentState instanceof NormalState)){
       console.log("Normal State")
       this.currentState = new NormalState(this)
 
-    }
-    
+    } 
 
   }
 
@@ -98,9 +96,14 @@ class BabyBot {
 
 }
 
+getWhisperCommandResponse(cmd){
+
+  return this.currentState.onWhisperCommand(cmd)
+
+}
+
   onJoin(channelName){
 
-    
     this.babyBotChannel.toHandler(channelName, '', setting.greetingMessage)
 
   }
@@ -131,8 +134,6 @@ class BabyBot {
 
             this.babyBotChannel.toHandler(commandResponse[0], commandResponse[1], commandResponse[2])
 
-            
-
         }else if (prefix === setting.tagPrefix) {
 
             parseMessage = msg.slice(1).split(' ')
@@ -151,19 +152,30 @@ class BabyBot {
             responseMessage = this.getResponseToKeywords(parseMessage)
             this.babyBotChannel.toHandler(channelName,responseMessage[0], responseMessage[1])
 
-        }else {
-
-            console.log(msg)
-
         }
         
     }else{
-      //from whisper
-    }
+
+      if(context.username === this.currentState.holder){
+        
+        let prefix = msg.substr(0, 1)
+        let parseMessage
+        let commandResponse
+
+        if (prefix === setting.commandPrefix) {
+
+          parseMessage = msg.slice(1).split(' ')
+          const commandName = parseMessage[0]
+          commandResponse = this.getWhisperCommandResponse(commandName)
+
+          this.babyBotChannel.toHandler(commandResponse[0], commandResponse[1], commandResponse[2])
+
+        }
+      }
           
+    }
+
   }
-
-
   saveChatMessage (msg) {
     chatRecorder.storeMsg(msg)
   }

@@ -8,48 +8,85 @@ class CryingState {
     this.botRef = botRef
     this.cryingResponse = cryState.response
     this.cryingIntervalID = setInterval(this.sendCryingMessage.bind(this), cryState.messageInterval)
+    this.counter = 0
 }
 
   onCommand (cmdName) {
 
     let ageGroup = this.botRef.getAgeGroup()
     let response
+    let commandUser = this.botRef.commandUser
 
-    if(!this.cryingResponse[cmdName]){
-            
-        cmdName = "NoCommandFound"
-
-    }
-
-    if(cmdName === 'Hold' && !this.holder){
+    if(!this.holder && cmdName === 'Hold'){
         
-        this.holder = this.botRef.commandUser
+        this.startTime = (new Date).getTime()
+        this.holder = commandUser
         clearInterval(this.cryingIntervalID)
-        console.log("Stoped crying")
-        setTimeout(this.endingCryingState.bind(this), cryState.stateDuration)
+
+        this.holdTimeDurationID = setTimeout(this.endCryingState.bind(this), cryState.requiredHoldingTime - this.counter)
+        
         let listLength = this.cryingResponse[cmdName][ageGroup].length
         let ranNum = Math.floor(Math.random() * listLength)
 
         response = this.cryingResponse[cmdName][ageGroup][ranNum]
 
         return [this.holder,'whisper', response]
+      
+    }else if(!this.holder){
 
-    }else if(cmdName !== 'Hold'){
-        
-        let listLength = this.cryingResponse[cmdName][ageGroup].length
-        let ranNum = Math.floor(Math.random() * listLength)
+      let listLength = this.cryingResponse[cmdName][ageGroup].length
+      let ranNum = Math.floor(Math.random() * listLength)
 
-        response = this.cryingResponse[cmdName][ageGroup][ranNum]
+      response = this.cryingResponse[cmdName][ageGroup][ranNum]
 
+      return ["","", response]
+
+    }else if(this.holder && commandUser !== this.holder){
+
+      return ["","", "/me " + this.holder + " is holding the bot. It can't hear you."]
+
+
+    }else if(this.holder && commandUser === this.holder){
+
+      return [this.holder, "whisper", "I can't hear you, please whisper to me :)"]
+
+    }
+}
+
+onWhisperCommand(cmdName){
+
+  if(this.botRef.commandUser === this.holder && cmdName === "PutDown"){
+    
+    this.holder = null
+
+    clearTimeout(this.holdTimeDurationID)
+
+    this.endTime = (new Date).getTime()
+    this.counter += (this.endTime - this.startTime)
   
-        return ['','chat', response]
+    if(this.counter < cryState.requiredHoldingTime){
+      
+      this.cryingIntervalID = setInterval(this.sendCryingMessage.bind(this), cryState.messageInterval)
+    
+    }else{
+
+      this.endCryingState()
 
     }
 
-    
-        
-    
+    return ["","", this.botRef.commandUser+ " has put down the bot"]
+
+  }else{
+
+    return [this.holder,"whisper", "I don't understand, why are you telling me to do things now :'("]
+
   }
+
+
+}
+
+
+
 
   sendCryingMessage(){
 
@@ -57,7 +94,7 @@ class CryingState {
 
   }
 
-  endingCryingState(){
+  endCryingState(){
 
     this.botRef.babyBotChannel.toHandler(this.holder,"whisper",cryState.endingMessage)
     this.botRef.changeToNormalState()
