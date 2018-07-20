@@ -6,7 +6,7 @@
     "secToMonth" : 30,
     "secToDay" : 2,
 
-    "stateNames" : ["Crying", "Diaper-Changing", "Normal"],
+    "stateNames" : ["Crying", "Diaper-Changing", "Hungry", "Normal"],
 
     "commandPrefix" : "!",
     "tagPrefix" : "@",

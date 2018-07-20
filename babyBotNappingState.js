@@ -33,7 +33,8 @@ class NappingState {
 
   sendSleepyMessage(){
 
-    this.botRef.babyBotChannel.toHandler("","", napState.nappingMessage)
+    let msg = ["","", napState.nappingMessage]
+    this.botRef.say(msg)
 
   }
 

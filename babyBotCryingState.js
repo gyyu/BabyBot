@@ -7,6 +7,7 @@ class CryingState {
 
     this.botRef = botRef
     this.cryingResponse = cryState.response
+    this.sendCryingMessage()
     this.cryingIntervalID = setInterval(this.sendCryingMessage.bind(this), cryState.messageInterval)
     this.counter = 0
 }
@@ -86,13 +87,15 @@ onWhisperCommand(cmdName){
 
   sendCryingMessage(){
 
-    this.botRef.babyBotChannel.toHandler("","",cryState.cryingMessage)
+    let msg = ["","",cryState.cryingMessage]
+    this.botRef.say(msg)
 
   }
 
   endCryingState(){
 
-    this.botRef.babyBotChannel.toHandler(this.holder,"whisper",cryState.endingMessage)
+    let msg = [this.holder,"whisper",cryState.endingMessage]
+    this.botRef.say(msg)
     this.botRef.changeToNormalState()
 
   }

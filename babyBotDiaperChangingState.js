@@ -7,6 +7,7 @@ class DiaperChangingState {
 
     this.botRef = botRef
     this.diaperChangeResponse = diaperChangeState.response
+    this.requestDiaperChangeMessage()
     this.requestChangingIntervalID = setInterval(this.requestDiaperChangeMessage.bind(this), diaperChangeState.messageInterval)
     
 }
@@ -36,8 +37,9 @@ class DiaperChangingState {
 
   requestDiaperChangeMessage(){
 
-    this.botRef.babyBotChannel.toHandler("","",diaperChangeState.cryingMessage)
-
+    let msg = ["","",diaperChangeState.cryingMessage]
+    this.botRef.say(msg)
+    
   }
 
 }

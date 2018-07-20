@@ -3,6 +3,7 @@ const chatRecorder = require('./chatRecorder.js')
 const NormalState = require('./babyBotNormalState.js')
 const CryingState = require('./babyBotCryingState.js')
 const NappingState = require('./babyBotNappingState.js')
+const HungryState = require('./babyBotHungryState.js')
 const DiaperChangingState = require('./babyBotDiaperChangingState.js')
 const lists = require('./Settings/botLists.json')
 
@@ -23,6 +24,12 @@ class BabyBot {
 
   }
 
+  say(msg){
+
+    this.babyBotChannel.toHandler(msg[0], msg[1], msg[2])
+
+  }
+
   changeState () {
 
     let len = setting.stateNames.length
@@ -32,25 +39,31 @@ class BabyBot {
     console.log(stateName)
 
     switch (stateName) {
-      // case 'Crying':
 
-      //   this.currentState = new CryingState(this)
-      //   break
+      case  'Hungry':
 
-      // case 'Diaper-Changing':
+        this.currentState = new HungryState(this)
+        break
 
-      //   this.currentState = new DiaperChangingState(this)
-      //   break
+      case 'Crying':
 
-      // case 'Normal':
+        this.currentState = new CryingState(this)
+        break
 
-      //   this.currentState = new NormalState(this)
-      //   break
+      case 'Diaper-Changing':
 
-      default:
+        this.currentState = new DiaperChangingState(this)
+        break
+
+      case 'Normal':
 
         this.currentState = new NormalState(this)
         break
+
+      default:
+
+      this.currentState = new HungryState(this)
+      
 
     }
   }
@@ -101,9 +114,9 @@ class BabyBot {
     return [currentAgeInYear, currentAgeInMonth, currentAgeInDay]
   }
 
-  getCommandResponse (cmd) {
+  getCommandResponse (cmd, param) {
 
-    return this.currentState.onCommand(cmd)
+    return this.currentState.onCommand(cmd, param)
 
 }
 
@@ -141,7 +154,7 @@ getWhisperCommandResponse(cmd){
 
             parseMessage = msg.slice(1).split(' ')
             const commandName = parseMessage[0]
-            commandResponse = this.getCommandResponse(commandName)
+            commandResponse = this.getCommandResponse(commandName, parseMessage[1])
 
             this.babyBotChannel.toHandler(commandResponse[0], commandResponse[1], commandResponse[2])
 

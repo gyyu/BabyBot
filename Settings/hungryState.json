@@ -1,0 +1,63 @@
+{
+
+    "eventInterval" : [1000,3000,5000],
+    "hungryMessage" : "I am hungry",
+    "messageInterval" : 50000,
+
+    "knownFood" : ["apple", "carrot"],
+    "response": {
+
+        "Feed" : {
+
+            "0" : [":(" , ":/"],
+            "1" : ["Not hungry", "Don't want to eat"],
+            "2" : ["Don't want to eat"]
+
+
+        },
+
+        "Change" :{
+
+            "0" : [":(!!!" , ":/!!!!"],
+            "1" : ["NO!!", "NoNoNo!!!"],
+            "2" : ["Don't want to change"]
+
+
+        },
+
+        "Hold" : {
+
+            "0" : [":(!!!" , ":/!!!!"],
+            "1" : ["NO!!", "NoNoNo!!!"],
+            "2" : ["Don't want to change"]
+
+
+        },
+
+        "Nap" : {
+
+            "0" : ["Diaperchange no sleep" , "dpchge ZZZ"],
+            "1" : ["ZZZ ZZZ", "ZZZzz ZZZ zz ZZZ"],
+            "2" : ["ZZZzz ZZZ"]
+
+
+        },
+
+        "NoCommandFound" : {
+
+
+            "0" : ["NoCommandFound" , "NoCommandFound"],
+            "1" : ["NoCommandFound", "NoCommandFound"],
+            "2" : ["NoCommandFound"]
+
+
+
+        }
+
+
+
+    }
+
+
+
+}
