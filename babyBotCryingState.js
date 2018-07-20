@@ -45,8 +45,7 @@ class CryingState {
 
       return ["","", "/me " + this.holder + " is holding the bot. It can't hear you."]
 
-
-    }else if(this.holder && commandUser === this.holder){
+    }else if(commandUser === this.holder){
 
       return [this.holder, "whisper", "I can't hear you, please whisper to me :)"]
 
@@ -74,7 +73,7 @@ onWhisperCommand(cmdName){
 
     }
 
-    return ["","", this.botRef.commandUser+ " has put down the bot"]
+    return ["","", "/me " +this.botRef.commandUser+ " has put down the bot"]
 
   }else{
 
@@ -84,9 +83,6 @@ onWhisperCommand(cmdName){
 
 
 }
-
-
-
 
   sendCryingMessage(){
 

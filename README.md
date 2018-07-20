@@ -48,7 +48,7 @@
 - Sends whisper to the user who used the Hold command
 - If other users who are not holding the not use command while the bot is being held, the bot will tell the chat who is currently holding the bot
 - The user who is holding the bot can put down the bot using the !PutDown command in whisper
-- If the user who is holding the bot tries to use other command in the chat, the bot will whisper to the user telling him/her he is holding the bot right now
+- If the user who is holding the bot tries to use other commands in the chat, the bot will whisper to the user telling him/her he is holding the bot right now
 - Goes back to Normal state once the bot is being held certain amount of time
 
 ### babyBotNappingState.js

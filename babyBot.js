@@ -28,25 +28,26 @@ class BabyBot {
     let len = setting.stateNames.length
     let ran = Math.floor(Math.random() * len)
     let stateName = setting.stateNames[ran]
+        
     console.log(stateName)
 
     switch (stateName) {
-      case 'Crying':
+      // case 'Crying':
 
-        this.currentState = new CryingState(this)
-        break
+      //   this.currentState = new CryingState(this)
+      //   break
 
-      case 'Napping':
+      // case 'Diaper-Changing':
 
-        this.currentState = new NappingState(this)
-        break
+      //   this.currentState = new DiaperChangingState(this)
+      //   break
 
-      case 'Diaper-Changing':
+      // case 'Normal':
 
-        this.currentState = new DiaperChangingState(this)
-        break
+      //   this.currentState = new NormalState(this)
+      //   break
 
-      case 'Normal':
+      default:
 
         this.currentState = new NormalState(this)
         break
@@ -54,10 +55,20 @@ class BabyBot {
     }
   }
 
+  changeToNappingState(){
+
+    if(!(this.currentState instanceof NappingState)){
+
+      this.currentState = new NappingState(this)
+
+    }
+
+  }
+
   changeToNormalState(){
  
     if(!(this.currentState instanceof NormalState)){
-      console.log("Normal State")
+
       this.currentState = new NormalState(this)
 
     } 

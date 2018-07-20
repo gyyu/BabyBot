@@ -13,8 +13,8 @@
 
     "opts" : {
         "identity" : {
-            "username" : "sakanatest",
-            "password" : "oauth:8lr9tcngtsrpgmjypsrl7i3hcrm0or"
+            "username" : "sakanatest2",
+            "password" : "oauth:p9mil3vb45xxkr7pkt2d4nhrxv0f4z"
         },
         "channels" : [
             "kisakana"

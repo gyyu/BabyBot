@@ -10,7 +10,7 @@ class NormalState {
 
       let len = normalState.eventInterval.length
       let ran = Math.floor(Math.random()* len)
-      setTimeout(this.botRef.changeState.bind(this.botRef), normalState.eventInterval[ran])
+      this.changeStateIntervalID = setTimeout(this.botRef.changeState.bind(this.botRef), normalState.eventInterval[ran])
     }
   
     onCommand (cmdName) {
@@ -18,10 +18,18 @@ class NormalState {
       let ageGroup = this.botRef.getAgeGroup()
       let response
   
+      if(cmdName === "Nap"){
+
+        clearTimeout(this.changeStateIntervalID)
+        this.botRef.changeToNappingState()
+        
+      }
+
+      
       if(!this.normalResponse[cmdName]){
              
-          cmdName = "NoCommandFound"
-  
+        cmdName = "NoCommandFound"
+
       }
   
       let listLength = this.normalResponse[cmdName][ageGroup].length

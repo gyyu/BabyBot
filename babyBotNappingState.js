@@ -1,6 +1,5 @@
 const napState = require('./Settings/nappingState.json')
 
-
 class NappingState {
 
   constructor (botRef) {
@@ -8,6 +7,7 @@ class NappingState {
     this.botRef = botRef
     this.napingResponse = napState.response
     this.sendSleepyMessage()
+    console.log(napState.stateDuration)
     setTimeout(this.botRef.changeToNormalState.bind(this.botRef), napState.stateDuration)
     
 }
@@ -19,15 +19,15 @@ class NappingState {
 
     if(!this.napingResponse[cmdName]){
             
-        cmdName = "NoCommandFound"
+      return ['','chat', "/me babyBot is sleeping right now. It can't hear you! Plus, that's not a valid command."]
 
     }
 
-    let listLength = this.napingResponse[cmdName][ageGroup].length
-    let ranNum = Math.floor(Math.random() * listLength)
+    // let listLength = this.napingResponse[cmdName][ageGroup].length
+    // let ranNum = Math.floor(Math.random() * listLength)
 
-    response = this.napingResponse[cmdName][ageGroup][ranNum]
-    return ['','chat', response]
+    // response = this.napingResponse[cmdName][ageGroup][ranNum]
+    return ['','chat', "/me babyBot is sleeping right now. It can't hear you!"]
         
   }
 

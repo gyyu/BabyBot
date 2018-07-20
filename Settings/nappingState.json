@@ -34,6 +34,15 @@
 
         },
 
+        "Nap" : {
+
+            "0" : ["ZZZZ" , "ZZZ"],
+            "1" : ["ZZZ ZZZ", "ZZZzz ZZZ zz ZZZ"],
+            "2" : ["ZZZzz ZZZ"]
+
+
+        },
+
         "NoCommandFound" : {
 
 

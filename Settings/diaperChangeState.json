@@ -33,6 +33,15 @@
 
         },
 
+        "Nap" : {
+
+            "0" : ["Diaperchange no sleep" , "dpchge ZZZ"],
+            "1" : ["ZZZ ZZZ", "ZZZzz ZZZ zz ZZZ"],
+            "2" : ["ZZZzz ZZZ"]
+
+
+        },
+
         "NoCommandFound" : {
 
 
