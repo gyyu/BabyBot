@@ -24,9 +24,9 @@ class BabyBot {
 
   }
 
-  say(msg){
+  say(target, type, msg){
 
-    this.babyBotChannel.toHandler(msg[0], msg[1], msg[2])
+    this.babyBotChannel.toHandler(target, type, msg)
 
   }
 
@@ -60,11 +60,10 @@ class BabyBot {
         this.currentState = new NormalState(this)
         break
 
-      default:
+      // default:
 
-      this.currentState = new HungryState(this)
+      // this.currentState = new HungryState(this)
       
-
     }
   }
 
@@ -114,18 +113,6 @@ class BabyBot {
     return [currentAgeInYear, currentAgeInMonth, currentAgeInDay]
   }
 
-  getCommandResponse (cmd, param) {
-
-    return this.currentState.onCommand(cmd, param)
-
-}
-
-getWhisperCommandResponse(cmd){
-
-  return this.currentState.onWhisperCommand(cmd)
-
-}
-
   onJoin(channelName){
 
     this.babyBotChannel.toHandler(channelName, '', setting.greetingMessage)
@@ -140,7 +127,7 @@ getWhisperCommandResponse(cmd){
       console.log(chatMsg)
 
       let msgType = context["message-type"]
-      this.commandUser = context.username
+ 
       // Ignore messages from the bot
       if (self) {return}
 
@@ -148,15 +135,13 @@ getWhisperCommandResponse(cmd){
 
         let prefix = msg.substr(0, 1)
         let parseMessage
-        let commandResponse
+     
 
         if (prefix === setting.commandPrefix) {
 
             parseMessage = msg.slice(1).split(' ')
             const commandName = parseMessage[0]
-            commandResponse = this.getCommandResponse(commandName, parseMessage[1])
-
-            this.babyBotChannel.toHandler(commandResponse[0], commandResponse[1], commandResponse[2])
+            this.currentState.onCommand(commandName, parseMessage[1], context.username)
 
         }else if (prefix === setting.tagPrefix) {
 
@@ -178,21 +163,18 @@ getWhisperCommandResponse(cmd){
 
         }
         
-    }else{
+    }else if (msgType === "whisper"){
 
       if(context.username === this.currentState.holder){
         
         let prefix = msg.substr(0, 1)
         let parseMessage
-        let commandResponse
 
         if (prefix === setting.commandPrefix) {
 
           parseMessage = msg.slice(1).split(' ')
           const commandName = parseMessage[0]
-          commandResponse = this.getWhisperCommandResponse(commandName)
-
-          this.babyBotChannel.toHandler(commandResponse[0], commandResponse[1], commandResponse[2])
+          this.currentState.onWhisperCommand(commandName, parseMessage[1], context.username)
 
         }
       }

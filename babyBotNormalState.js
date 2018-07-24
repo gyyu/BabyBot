@@ -1,27 +1,28 @@
 const normalState = require('./Settings/normalState.json')
+const BabyBotStateParent = require('./babyBotStateParent.js')
 
-
-class NormalState {
+class NormalState extends BabyBotStateParent{
 
     constructor (botRef) {
+
   
-      this.botRef = botRef
+      super(botRef)
       this.normalResponse = normalState.response
 
       let len = normalState.eventInterval.length
       let ran = Math.floor(Math.random()* len)
-      this.changeStateIntervalID = setTimeout(this.botRef.changeState.bind(this.botRef), normalState.eventInterval[ran])
+      this.changeStateIntervalID = setTimeout(this.evokeRandomState, normalState.eventInterval[ran])
     }
   
     onCommand (cmdName) {
      
-      let ageGroup = this.botRef.getAgeGroup()
+      let ageGroup = this.getAgeGroup()
       let response
   
       if(cmdName === "Nap"){
 
         clearTimeout(this.changeStateIntervalID)
-        this.botRef.changeToNappingState()
+        this.toNappingState()
         
       }
 
@@ -36,7 +37,7 @@ class NormalState {
       let ranNum = Math.floor(Math.random() * listLength)
   
       response = this.normalResponse[cmdName][ageGroup][ranNum] 
-      return ['','chat', response]
+      this.sendMessage('','chat', response)
           
       
     }

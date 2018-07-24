@@ -1,10 +1,9 @@
 {
 
-    "eventInterval" : [1000,3000,5000],
-    "hungryMessage" : "I am hungry",
+    "message" : "I am hungry",
     "messageInterval" : 50000,
 
-    "knownFood" : ["apple", "carrot"],
+    "knownFood" : {"apple" : 1 , "carrot" : -1},
     "response": {
 
         "Feed" : {

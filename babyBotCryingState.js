@@ -1,27 +1,34 @@
 const cryState = require('./Settings/cryingState.json')
+const BabyBotStateParent = require('./babyBotStateParent.js')
 
 
-class CryingState {
+class CryingState extends BabyBotStateParent{
 
   constructor (botRef) {
 
-    this.botRef = botRef
+    super(botRef)
     this.cryingResponse = cryState.response
-    this.sendCryingMessage()
-    this.cryingIntervalID = setInterval(this.sendCryingMessage.bind(this), cryState.messageInterval)
+    this.stateMessage = cryState.message
     this.counter = 0
+    this.sendMessage("","", this.stateMessage)  
+    this.cryingIntervalID =setInterval(this.sendMessage.bind(this, "","", this.stateMessage), cryState.messageInterval)
 }
 
-  onCommand (cmdName) {
+  onCommand (cmdName, param= "", cmdUser ="") {
 
-    let ageGroup = this.botRef.getAgeGroup()
+    let ageGroup = this.getAgeGroup()
     let response
-    let commandUser = this.botRef.commandUser
+
+    if(!this.cryingResponse[cmdName]){
+             
+      cmdName = "NoCommandFound"
+
+    }
 
     if(!this.holder && cmdName === 'Hold'){
         
         this.startTime = (new Date).getTime()
-        this.holder = commandUser
+        this.holder = cmdUser
         clearInterval(this.cryingIntervalID)
 
         this.holdTimeDurationID = setTimeout(this.endCryingState.bind(this), cryState.requiredHoldingTime - this.counter)
@@ -31,7 +38,12 @@ class CryingState {
 
         response = this.cryingResponse[cmdName][ageGroup][ranNum]
 
-        return [this.holder,'whisper', response]
+        this.sendMessage(this.holder,'whisper', response)
+      
+    }else if(!this.holder && cmdName === "Nap"){
+
+      clearTimeout(this.cryingIntervalID)
+      this.toNappingState()
       
     }else if(!this.holder){
 
@@ -40,23 +52,26 @@ class CryingState {
 
       response = this.cryingResponse[cmdName][ageGroup][ranNum]
 
-      return ["","", response]
+      this.sendMessage("","", response)
 
-    }else if(this.holder && commandUser !== this.holder){
+    }else if(this.holder && cmdUser !== this.holder){
 
-      return ["","", "/me " + this.holder + " is holding the bot. It can't hear you."]
+      this.sendMessage("","", "/me " + this.holder + " is holding the bot. It can't hear you.")
 
-    }else if(commandUser === this.holder){
+    }else if(cmdUser === this.holder){
 
-      return [this.holder, "whisper", "I can't hear you, please whisper to me :)"]
+      this.sendMessage(this.holder, "whisper", "I can't hear you, please whisper to me :)")
 
     }
 }
 
-onWhisperCommand(cmdName){
+onWhisperCommand(cmdName, param= "", cmdUser =""){
 
-  if(this.botRef.commandUser === this.holder && cmdName === "PutDown"){
+  console.log("Put baby Down" + cmdUser + " " + cmdUser)
+
+  if(cmdUser === this.holder && cmdName === "PutDown"){
     
+   
     this.holder = null
 
     clearTimeout(this.holdTimeDurationID)
@@ -66,7 +81,7 @@ onWhisperCommand(cmdName){
   
     if(this.counter < cryState.requiredHoldingTime){
       
-      this.cryingIntervalID = setInterval(this.sendCryingMessage.bind(this), cryState.messageInterval)
+      this.cryingIntervalID = setInterval(this.sendMessage.bind(this, "","", this.stateMessage), cryState.messageInterval)
     
     }else{
 
@@ -74,29 +89,21 @@ onWhisperCommand(cmdName){
 
     }
 
-    return ["","", "/me " +this.botRef.commandUser+ " has put down the bot"]
+    this.sendMessage("","", "/me " +cmdUser+ " has put down the bot")
 
   }else{
 
-    return [this.holder,"whisper", "I don't understand, why are you telling me to do things now :'("]
+    this.sendMessage(this.holder,"whisper", "I don't understand, why are you telling me to do things now :'(")
 
   }
 
 
 }
 
-  sendCryingMessage(){
-
-    let msg = ["","",cryState.cryingMessage]
-    this.botRef.say(msg)
-
-  }
-
   endCryingState(){
 
-    let msg = [this.holder,"whisper",cryState.endingMessage]
-    this.botRef.say(msg)
-    this.botRef.changeToNormalState()
+    this.sendMessage(this.holder,"whisper",cryState.endingMessage)
+    this.toNormalState()
 
   }
 
