@@ -1,6 +1,6 @@
 {
 
-    "eventInterval" : [1000,3000,5000],
+    "eventInterval" : [1000000,3000000,5000000],
 
     "response": {
 

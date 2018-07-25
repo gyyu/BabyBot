@@ -30,10 +30,9 @@ class HungryState extends BabyBotStateParent{
             this.sendMessage("","chat", "What to eat?") 
 
         }
-        
+        food = food.toLowerCase()
         if(hungryState.knownFood[food]){
 
-           
             if(hungryState.knownFood[food] === 1){
 
                 this.sendMessage("","chat", "Yum yum! :)") 
@@ -47,33 +46,34 @@ class HungryState extends BabyBotStateParent{
 
         }else if (food !== ""){
 
-            this.sendMessage("","chat", "I don't know what is "+ food +"... But I'll give it a try!")
             let ranInt = Math.floor(Math.random()*Math.floor(2))
             if(ranInt){
                 hungryState.knownFood[food] = 1
-                this.sendMessage("","chat", "Taste good!")
+                this.sendMessage("","chat", "I don't know what is "+ food +"... But I'll give it a try!.....And it taste good!")
 
             }else{
                 hungryState.knownFood[food] = -1
-                this.sendMessage("","chat", "Ewww!!! :(")
+                this.sendMessage("","chat", "I don't know what is "+ food +"... But I'll give it a try!....Ewww!!! :(")
             }
             
-            this.sendMessage("","chat", "I don't know what is "+ food +"... But I'll give it a try!")
-
             console.log(hungryState.knownFood)
 
             clearInterval(this.requestFeedingIntervalID)
             this.toNormalState()
         }
            
+    }else{
+        
+        let listLength = this.hungryResponse[cmdName][ageGroup].length
+        let ranNum = Math.floor(Math.random() * listLength)
+    
+        let response = this.hungryResponse[cmdName][ageGroup][ranNum]
+    
+        this.sendMessage("","chat", response)
+
     }
 
-    let listLength = this.hungryResponse[cmdName][ageGroup].length
-    let ranNum = Math.floor(Math.random() * listLength)
-
-    let response = this.hungryResponse[cmdName][ageGroup][ranNum]
-
-    this.sendMessage("","chat", response)
+    
   }
 
 }

@@ -1,5 +1,5 @@
 {
-    "username" : "sakanatest",
+    "username" : "sakanatest2",
     
     "age":0,
     "secToYear" : 720,
@@ -15,9 +15,6 @@
     "noCommandFoundMessage" : "This is not a valid command.",
     "exitMessage" : "That's it for today! Seeya!",
    
-    "diaperChangeMessage" : "Change My DIAPER",
-    "nappingMessage" : "I want bedtime story",
-
     "keywords" : {
 
         "favorite" : {
@@ -31,6 +28,13 @@
 
 
         }
+
+    },
+
+    "knownWords" : {
+
+
+
 
     }
 }
