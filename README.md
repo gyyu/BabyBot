@@ -63,6 +63,12 @@
 - Will keep on sending request until users used the Change command
 - Goes back to Normal state once the diaper is changed
 
+### babyBotHungryState.js
+#### hungryState.json
+- Asks the users to feed it
+- If the bot doens't know the food already will add the food to list
+
+
 ### Bot Flow Diagram
 ![alt text](https://github.com/ihwang1/BabyBot/blob/master/Design/BabyBot%20Flow.jpg "BabyBot Flow Chart")
 

@@ -1,10 +1,9 @@
 {
 
-    "eventInterval" : [1000,3000,5000],
     "stateDuration" : 10000,
 
-    "nappingMessage" : "I'm going to take a nap ZZZzzzzz",
-
+    "message" : "I'm going to take a nap ZZZzzzzz",
+   
     "response": {
 
         "Feed" : {

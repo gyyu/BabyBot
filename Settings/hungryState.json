@@ -1,15 +1,15 @@
 {
 
-    "messageInterval" : 10000,
-    "requiredHoldingTime" : 100000,
-    "message" : "Waaaaa Waaaaa WAAAAAAAAAA",
-    "endingMessage" : "I feel better now",
+    "message" : "I am hungry",
+    "messageInterval" : 50000,
+
+    "knownFood" : {"apple" : 1 , "carrot" : -1},
     "response": {
 
         "Feed" : {
 
             "0" : [":(" , ":/"],
-            "1" : ["NO", "NoNoNo"],
+            "1" : ["Not hungry", "Don't want to eat"],
             "2" : ["Don't want to eat"]
 
 
@@ -35,7 +35,7 @@
 
         "Nap" : {
 
-            "0" : ["np nap" , "dont want nap"],
+            "0" : ["Diaperchange no sleep" , "dpchge ZZZ"],
             "1" : ["ZZZ ZZZ", "ZZZzz ZZZ zz ZZZ"],
             "2" : ["ZZZzz ZZZ"]
 
@@ -52,6 +52,7 @@
 
 
         }
+
 
 
     }

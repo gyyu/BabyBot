@@ -1,40 +1,35 @@
 const napState = require('./Settings/nappingState.json')
+const BabyBotStateParent = require('./babyBotStateParent.js')
 
-class NappingState {
+class NappingState extends BabyBotStateParent{
 
   constructor (botRef) {
 
-    this.botRef = botRef
+    super(botRef)
     this.napingResponse = napState.response
-    this.sendSleepyMessage()
-    console.log(napState.stateDuration)
-    setTimeout(this.botRef.changeToNormalState.bind(this.botRef), napState.stateDuration)
+    this.stateMessage = napState.message
+    this.sendMessage("","", this.stateMessage)  
+    setTimeout(this.toNormalState, napState.stateDuration)
     
 }
 
   onCommand (cmdName) {
 
-    let ageGroup = this.botRef.getAgeGroup()
-    let response
+    // let ageGroup = this.botRef.getAgeGroup()
+    // let response
 
-    if(!this.napingResponse[cmdName]){
+    // if(!this.napingResponse[cmdName]){
             
-      return ['','chat', "/me babyBot is sleeping right now. It can't hear you! Plus, that's not a valid command."]
+    //   return ['','chat', "/me babyBot is sleeping right now. It can't hear you! Plus, that's not a valid command."]
 
-    }
+    // }
 
     // let listLength = this.napingResponse[cmdName][ageGroup].length
     // let ranNum = Math.floor(Math.random() * listLength)
 
     // response = this.napingResponse[cmdName][ageGroup][ranNum]
-    return ['','chat', "/me babyBot is sleeping right now. It can't hear you!"]
+    this.sendMessage('','chat', "/me babyBot is sleeping right now. It can't hear you!")
         
-  }
-
-  sendSleepyMessage(){
-
-    this.botRef.babyBotChannel.toHandler("","", napState.nappingMessage)
-
   }
 
 }

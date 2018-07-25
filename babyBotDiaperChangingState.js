@@ -1,19 +1,21 @@
 const diaperChangeState = require('./Settings/diaperChangeState.json')
+const BabyBotStateParent = require('./babyBotStateParent.js')
 
-
-class DiaperChangingState {
+class DiaperChangingState extends BabyBotStateParent{
 
   constructor (botRef) {
-
-    this.botRef = botRef
+   
+    super(botRef)
     this.diaperChangeResponse = diaperChangeState.response
-    this.requestChangingIntervalID = setInterval(this.requestDiaperChangeMessage.bind(this), diaperChangeState.messageInterval)
+    this.stateMessage = diaperChangeState.message
+    this.sendMessage("","", this.stateMessage)  
+    this.requestChangingIntervalID = setInterval(this.sendMessage.bind(this, "","", this.stateMessage), diaperChangeState.messageInterval)
     
 }
 
   onCommand (cmdName) {
 
-    let ageGroup = this.botRef.getAgeGroup()
+    let ageGroup = this.getAgeGroup()
     
     if(!this.diaperChangeResponse[cmdName]){
             
@@ -28,16 +30,10 @@ class DiaperChangingState {
 
     if (cmdName === 'Change') {
         clearInterval(this.requestChangingIntervalID)
-        this.botRef.changeToNormalState()      
+        this.toNormalState()      
     }
 
-    return ["","chat", response]
-  }
-
-  requestDiaperChangeMessage(){
-
-    this.botRef.babyBotChannel.toHandler("","",diaperChangeState.cryingMessage)
-
+    this.sendMessage("","chat", response)
   }
 
 }
