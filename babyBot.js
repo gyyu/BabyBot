@@ -127,7 +127,6 @@ class BabyBot {
 
     }else if (1440 < ageInDay) {
 
-
         return "2"
 
     }
@@ -181,8 +180,8 @@ class BabyBot {
 
             }
 
-            // responseMessage = this.getResponseToKeywords(parseMessage)
-            // this.babyBotChannel.toHandler(channelName,responseMessage[0], responseMessage[1])
+            let responseMessage = this.getResponseToKeywords(newMsg)
+            this.babyBotChannel.toHandler("","", responseMessage)
 
         }else{
 
@@ -245,7 +244,6 @@ class BabyBot {
     let firstWord
     let secondWord
 
-
     // //   // This code loops through goodbye list and if it encounters a word from that list in the user's message, someone is saying 
     // //   // goodbye so the bot should say something too. We would have to do this for every list so I'm trying to find a simpler way of doing it. 
     // for ( var e = 0; e < goodbyeList.length; e++) {
@@ -263,22 +261,34 @@ class BabyBot {
     for (var i = 0; i < msg.length; i++) {
       firstWord = msg[i]
 
-      if (keywords[firstWord] && i + 1 <= msg.length) {
+      if (keywords[firstWord] && i + 1 < msg.length) {
         secondWord = msg[i + 1]
 
-        if (keywords[firstWord][secondWord]) {
+        if(keywords[firstWord][secondWord] && keywords[firstWord][secondWord].length != 0) {
+          
           let arrLen = keywords[firstWord][secondWord].length
           let randomNumber = Math.floor((Math.random() * arrLen))
           response = keywords[firstWord][secondWord][randomNumber]
-        }else {
-          response = firstWord + ' what?'
+
+        }else if(keywords[firstWord][secondWord] && keywords[firstWord][secondWord].length === 0){
+
+          response = "I don't think I have a " + firstWord + " " + secondWord + "." 
+
+        }else{
+
+          keywords[firstWord][secondWord] = []
+          response = "I don't know too much about this topic, maybe you can tell me more."
+
         }
-      }else {
-        response = firstWord + ' what?'
+
+      }else if(keywords[firstWord] && i+1 === msg.length){
+
+        response = firstWord + " what?"
       }
     }
 
     return response
+    
   }
 
 }
