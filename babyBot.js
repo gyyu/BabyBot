@@ -6,10 +6,22 @@ const NappingState = require('./babyBotNappingState.js')
 const HungryState = require('./babyBotHungryState.js')
 const DiaperChangingState = require('./babyBotDiaperChangingState.js')
 const lists = require('./Settings/botLists.json')
+// const users = require('./Settings/userLists.json')
+// const fs = require('fs')
+
+// let list = users;
+// let userExist = false;
+
+// // Status point variables
+// let defaultPoints = 0;
+// let followerPoints = 1;
+// let modPoints = 2;
+// let subPoints = 3;
 
 let taggedCounter = 0; // used to measure the number of times the bot interacts, when it hits a certain number, it will take a nap 
 let goodbyeList = lists.botLists["possible"]["goodbye"]; 
-let cursewordList = lists.botLists["possible"]["cursewords"]
+let cursewordList = lists.botLists["possible"]["cursewords"];
+
 class BabyBot {
 
   constructor (botRef) {
@@ -125,6 +137,10 @@ class BabyBot {
       let chatMsg = `[${channelName} (${context['message-type']})] ${context.username}: ${msg}` // + JSON.stringify(context)
       // saveChatMessage(chatMsg)
       console.log(chatMsg)
+      console.log(context)
+
+      // A user has sent a message. Lets see if they are in our reputation database, if not, add them.
+      // checkForUser(context.username, , true, true);
 
       let msgType = context["message-type"]
  
@@ -204,12 +220,12 @@ class BabyBot {
     for (var i = 0; i < msg.length; i++) {
       firstWord = msg[i]
 
-    //   // This code loops through goodbye list and if it encounters a word from that list in the user's message, someone is saying 
-    //   // goodbye so the bot should say something too. We would have to do this for every list so I'm trying to find a simpler way of doing it. 
+      // This code loops through goodbye list and if it encounters a word from that list in the user's message, someone is saying 
+      // goodbye so the bot should say something too. We would have to do this for every list so I'm trying to find a simpler way of doing it. 
       for ( var e = 0; e < goodbyeList.length; e++) {
         if (msg[i] === goodbyeList[e]) {
-          console.log("no don't leave me")
-        }
+          // do some if statements that check at status and based on status a different message will be sent
+          if (getUserStatus(useranme) = "high") console.log("no don't leave me");
       }
 
       for ( var e = 0; e < cursewordList.length; e++) {
@@ -235,6 +251,7 @@ class BabyBot {
 
     return response
   }
+}
 
 
   getAgeGroup(){
@@ -258,6 +275,53 @@ class BabyBot {
 
   }
 
+  // // Check the user that interacted with the bot and see if they are in our database, if not add them.
+  // checkForUser (username, isSub, isMod, isFollower) {
+  //   for (i in list){
+  //       if (list[i]["username"] === username){
+  //           userExist = true;
+  //           console.log("\nThe user, " + username + " , is in the list already!\n");
+  //           break;
+  //       } 
+  //   }
+  //   if (!userExist){
+  //       console.log("\nThe user, " + username + " , is not in the list, adding them now!\n");
+  //       addUser(username, isSub, isMod, isFollower);
+  //   }
+  //   // Save the list so that it has the latest contents
+  //   fs.writeFileSync("./userLists.json", JSON.stringify(list));
+  // }
+
+  // // The user is not in our database. So lets add them through an object 
+  // // and give them the default values. 
+  //   addUser (username, isSub, isMod, isFollower) {
+  //   userObject = {};
+  //   userObject["username"] = username;
+  //   userObject["subscriber"] = isSub;
+  //   userObject["mod"] = isMod;
+  //   userObject["follower"] = isFollower;
+  //   userObject["points"] = defaultPoints;
+  //   userObject["status"] = low;
+
+  //   // Depending on the user's status in the channel, they will earn
+  //   // higher points for being a higher status
+  //   if (isSub == true) userObject["points"] += subPoints;
+  //   if (isMod == true) userObject["points"] += modPoints;
+  //   if (isFollower == true) userObject["points"] += followerPoints;
+    
+  //   // Add the user to the list
+  //   list.push(userObject);
+  // }
+
+  // // Get the status for the user so we can interact differently
+  // getUserStatus (username) {
+  //   for (i in list) {
+  //       if (list[i]["username"] === username) {
+  //           userStatus = list[i]["status"];
+  //           return userStatus;   
+  //       }
+  //   }
+  // }
 }
 
 module.exports = BabyBot

@@ -38,6 +38,9 @@ class CryingState extends BabyBotStateParent{
 
         response = this.cryingResponse[cmdName][ageGroup][ranNum]
 
+        // The user did something positive so give him positive points
+        // addPoints(this.holder, cmdName)
+
         this.sendMessage(this.holder,'whisper', response)
       
     }else if(!this.holder && cmdName === "Nap"){
