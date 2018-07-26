@@ -1,4 +1,5 @@
 const setting = require('./Settings/botState.json')
+const wordObjects = require('./Settings/botWords.json')
 const chatRecorder = require('./chatRecorder.js')
 const NormalState = require('./babyBotNormalState.js')
 const CryingState = require('./babyBotCryingState.js')
@@ -6,7 +7,6 @@ const NappingState = require('./babyBotNappingState.js')
 const HungryState = require('./babyBotHungryState.js')
 const DiaperChangingState = require('./babyBotDiaperChangingState.js')
 const lists = require('./Settings/botLists.json')
-<<<<<<< HEAD
 // const users = require('./Settings/userLists.json')
 // const fs = require('fs')
 
@@ -22,13 +22,6 @@ const lists = require('./Settings/botLists.json')
 let taggedCounter = 0; // used to measure the number of times the bot interacts, when it hits a certain number, it will take a nap 
 let goodbyeList = lists.botLists["possible"]["goodbye"]; 
 let cursewordList = lists.botLists["possible"]["cursewords"];
-=======
-const wordObjects = require('./Settings/botWords.json')
-
-let taggedCounter = 0; // used to measure the number of times the bot interacts, when it hits a certain number, it will take a nap 
-let goodbyeList = lists.botLists["possible"]["goodbye"]; 
-let cursewordList = lists.botLists["possible"]["cursewords"]
->>>>>>> b9f87fb8ec18ebad2050ecdd176e035e33ec75b0
 
 class BabyBot {
 
@@ -163,15 +156,11 @@ class BabyBot {
       let chatMsg = `[${channelName} (${context['message-type']})] ${context.username}: ${msg}` // + JSON.stringify(context)
       // saveChatMessage(chatMsg)
       console.log(chatMsg)
-<<<<<<< HEAD
       console.log(context)
 
       // A user has sent a message. Lets see if they are in our reputation database, if not, add them.
       // checkForUser(context.username, , true, true);
 
-=======
-      console.log(msg.length)
->>>>>>> b9f87fb8ec18ebad2050ecdd176e035e33ec75b0
       let msgType = context["message-type"]
  
       // Ignore messages from the bot
@@ -280,7 +269,6 @@ class BabyBot {
     //   }
     // }
 
-<<<<<<< HEAD
       // This code loops through goodbye list and if it encounters a word from that list in the user's message, someone is saying 
       // goodbye so the bot should say something too. We would have to do this for every list so I'm trying to find a simpler way of doing it. 
       for ( var e = 0; e < goodbyeList.length; e++) {
@@ -288,14 +276,7 @@ class BabyBot {
           // do some if statements that check at status and based on status a different message will be sent
           if (getUserStatus(useranme) = "high") console.log("no don't leave me");
       }
-=======
-    // for ( var e = 0; e < cursewordList.length; e++) {
-    //   if (msg[i] === cursewordList[e]) {
-    //     console.log(msg[i] + '?')
-    //   }
-    // }
->>>>>>> b9f87fb8ec18ebad2050ecdd176e035e33ec75b0
-
+    }
     for (var i = 0; i < msg.length; i++) {
       firstWord = msg[i]
 
@@ -307,20 +288,6 @@ class BabyBot {
           let arrLen = keywords[firstWord][secondWord].length
           let randomNumber = Math.floor((Math.random() * arrLen))
           response = keywords[firstWord][secondWord][randomNumber]
-<<<<<<< HEAD
-        }else {
-          response = firstWord + ' what?'
-        }
-      }else {
-        response = firstWord + ' what?'
-      }
-    }
-
-    return response
-  }
-}
-=======
->>>>>>> b9f87fb8ec18ebad2050ecdd176e035e33ec75b0
 
         }else if(keywords[firstWord][secondWord] && keywords[firstWord][secondWord].length === 0){
 
