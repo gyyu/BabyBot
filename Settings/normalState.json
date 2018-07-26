@@ -16,6 +16,31 @@
 
     },
 
+    "emoteProbability": {
+
+        "upperRange" : 2,
+        "lowerRange" : -1
+    },
+
+    "emoteList" : {
+        "BibleThump" : true,      
+        "BigBrother": true,
+        "BigPhish": true,
+        "BisexualPride": true,
+       "BlargNaut": true,
+        "BlessRNG": true,
+        "BloodTrail": true,
+        "BrainSlug": true,
+        "BrokeBack": true,
+        "BuddhaBar": true,   
+        "CarlSmile": true,
+        "ChefFrank": true
+        },
+
+    "askedWord" : {
+
+    },
+
     "response": {
 
         "Feed" : {

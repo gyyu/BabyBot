@@ -91,6 +91,7 @@ class TwitchHandler {
   onDisconnectedHandler (reason) {
 
     console.log(`Womp womp, disconnected: ${reason}`)
+    process.exit(1)
    
   }
 

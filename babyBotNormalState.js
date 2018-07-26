@@ -5,7 +5,6 @@ class NormalState extends BabyBotStateParent{
 
     constructor (botRef) {
 
-  
       super(botRef)
       this.normalResponse = normalState.response
 
@@ -33,44 +32,73 @@ class NormalState extends BabyBotStateParent{
           this.toNappingState()
           break
         
-          case 'YayCopyPasta':
-            normalState.copyPastaProbability.encouraged += 1
-            break
+        case 'YayCopyPasta':
+          normalState.copyPastaProbability.encouraged += 1
+          break
 
+        case 'NoCopyPasta':
+
+          normalState.copyPastaProbability.discouraged -= 1
+          break
         
-          case 'NoCopyPasta':
+        case 'YayCurse':
 
-            normalState.copyPastaProbability.discouraged -= 1
-            break
-          
-          case 'YayCurse':
-
-            normalState.curseProbability.encouraged += 1
-            break
-          
-          case 'NoCurse':
-
-            normalState.curseProbability.encouraged += 1
-            break
-          
-          default:
-
-            let listLength = this.normalResponse[cmdName][ageGroup].length
-            let ranNum = Math.floor(Math.random() * listLength)
+          normalState.curseProbability.encouraged += 1
+          break
         
-            response = this.normalResponse[cmdName][ageGroup][ranNum] 
-            this.sendMessage('','chat', response)
+        case 'NoCurse':
+
+          normalState.curseProbability.encouraged -= 1
+          break
+        
+        default:
+
+          let listLength = this.normalResponse[cmdName][ageGroup].length
+          let ranNum = Math.floor(Math.random() * listLength)
+      
+          response = this.normalResponse[cmdName][ageGroup][ranNum] 
+          this.sendMessage('','chat', response)
       }
           
     }
 
     onMessage(msg){
 
+      let emote = this.emoteExist(msg)
+      console.log(emote)
+      //if shows up in the last 10 msgs too
       if (msg.length >= 10){
 
         this.repeatCopyPasta(msg)
+      
+      }else if(emote != ""){
+
+        let max = normalState.emoteProbability.upperRange
+        let min = normalState.emoteProbability.lowerRange
+
+        let prob = Math.floor(Math.random() * (max - min + 1)) + min
+        console.log(prob)
+        if(prob >= 0){
+
+          console.log(emote)
+          this.sendMessage('', 'chat', emote)
+        }
+        
+
+      }else{
+  
+        let words = msg.filter(word => word.length > 3)
+        let ranNum = Math.floor(Math.random() * words.length)
+        let word = msg[ranNum]
+        
+        if(!normalState.askedWord[word] && word.length > 3){
+          normalState.askedWord[word] = true
+          this.sendMessage('','chat', "What is " + word.replace(/[,.?&]+/g, "") + "?")
+        }
+
       }
 
+      this.curse()
 
     }
 
@@ -86,17 +114,44 @@ class NormalState extends BabyBotStateParent{
       let min = normalState.copyPastaProbability.discouraged
 
       let prob = Math.floor(Math.random() * (max - min + 1)) + min
-      
-      console.log(prob)
+  
       if(prob >= 0){
 
         this.sendMessage('','chat', msg)
 
       }
       
-
     }
         
+    curse(){
+
+      let max = normalState.curseProbability.encouraged
+      let min = normalState.curseProbability.discouraged
+
+      let prob = Math.floor(Math.random() * (max - min + 1)) + min
+
+      if(prob >= 0){
+
+        this.sendMessage('','chat', "Some curse words here")
+
+      }
+
+    }
+
+    emoteExist(msg){
+
+      let emoteList = msg.filter(word => normalState.emoteList[word])
+      let listLen = emoteList.length
+      let word = ""
+      if(listLen > 0){
+
+        let ranNum = Math.floor(Math.random() * emoteList.length)
+        word = msg[ranNum]
+      }
+      
+      return word
+    
+    }
   
   }
 

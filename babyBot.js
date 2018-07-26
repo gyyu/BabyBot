@@ -150,14 +150,14 @@ class BabyBot {
 
   }
 
-
   onMessage (channelName, context, msg, self) {
 
       let chatMsg = `[${channelName} (${context['message-type']})] ${context.username}: ${msg}` // + JSON.stringify(context)
       // saveChatMessage(chatMsg)
       console.log(chatMsg)
-      console.log(context)
+      //console.log(context)
 
+     // msg = msg.toLowerCase()
       // A user has sent a message. Lets see if they are in our reputation database, if not, add them.
       // checkForUser(context.username, , true, true);
 
@@ -204,7 +204,6 @@ class BabyBot {
           let newMsg = this.stripMsg(msg.split(' '))
           this.learnFromMessage(newMsg, wordObjects.lightWeight)
           
-
         }
         
     }else if (msgType === "whisper"){
