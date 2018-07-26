@@ -140,12 +140,12 @@ class BabyBot {
   }
 
 
-  onMessage ( channelName, context, msg, self) {
+  onMessage (channelName, context, msg, self) {
 
       let chatMsg = `[${channelName} (${context['message-type']})] ${context.username}: ${msg}` // + JSON.stringify(context)
       // saveChatMessage(chatMsg)
       console.log(chatMsg)
-
+      console.log(msg.length)
       let msgType = context["message-type"]
  
       // Ignore messages from the bot
@@ -184,9 +184,11 @@ class BabyBot {
             this.babyBotChannel.toHandler("","", responseMessage)
 
         }else{
-
+         
+          this.currentState.onMessage(msg.split(' '))
           let newMsg = this.stripMsg(msg.split(' '))
           this.learnFromMessage(newMsg, wordObjects.lightWeight)
+          
 
         }
         
