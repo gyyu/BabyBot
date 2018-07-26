@@ -19,34 +19,48 @@ class NormalState extends BabyBotStateParent{
       let ageGroup = this.getAgeGroup()
       let response
   
-      if(cmdName === "Nap"){
-
-        clearTimeout(this.changeStateIntervalID)
-        this.toNappingState()
-        
-      }
-
-      if(cmdName === "YayCopyPasta"){
-
-        normalState.copyPastaProbability.encouraged += 1
-      }else if(cmdName === "NoCopyPasta"){
-
-        normalState.copyPastaProbability.discouraged -= 1
-
-      }else if(!this.normalResponse[cmdName]){
+      if(!this.normalResponse[cmdName]){
              
         cmdName = "NoCommandFound"
 
       }
 
-      
+      switch(cmdName){
 
-  
-      let listLength = this.normalResponse[cmdName][ageGroup].length
-      let ranNum = Math.floor(Math.random() * listLength)
-  
-      response = this.normalResponse[cmdName][ageGroup][ranNum] 
-      this.sendMessage('','chat', response)
+        case 'Nap':
+
+          clearTimeout(this.changeStateIntervalID)
+          this.toNappingState()
+          break
+        
+          case 'YayCopyPasta':
+            normalState.copyPastaProbability.encouraged += 1
+            break
+
+        
+          case 'NoCopyPasta':
+
+            normalState.copyPastaProbability.discouraged -= 1
+            break
+          
+          case 'YayCurse':
+
+            normalState.curseProbability.encouraged += 1
+            break
+          
+          case 'NoCurse':
+
+            normalState.curseProbability.encouraged += 1
+            break
+          
+          default:
+
+            let listLength = this.normalResponse[cmdName][ageGroup].length
+            let ranNum = Math.floor(Math.random() * listLength)
+        
+            response = this.normalResponse[cmdName][ageGroup][ranNum] 
+            this.sendMessage('','chat', response)
+      }
           
     }
 

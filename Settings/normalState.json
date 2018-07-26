@@ -9,6 +9,13 @@
 
     },
 
+    "curseProbability" :{
+
+        "encouraged" : 0,
+        "discouraged" : 0
+
+    },
+
     "response": {
 
         "Feed" : {
@@ -63,7 +70,10 @@
 
 
 
-        }
+        },
+
+        "YayCurse" :{},
+        "NoCurse" : {}
 
 
 
