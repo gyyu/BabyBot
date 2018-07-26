@@ -6,6 +6,7 @@ const NappingState = require('./babyBotNappingState.js')
 const HungryState = require('./babyBotHungryState.js')
 const DiaperChangingState = require('./babyBotDiaperChangingState.js')
 const lists = require('./Settings/botLists.json')
+<<<<<<< HEAD
 // const users = require('./Settings/userLists.json')
 // const fs = require('fs')
 
@@ -21,6 +22,13 @@ const lists = require('./Settings/botLists.json')
 let taggedCounter = 0; // used to measure the number of times the bot interacts, when it hits a certain number, it will take a nap 
 let goodbyeList = lists.botLists["possible"]["goodbye"]; 
 let cursewordList = lists.botLists["possible"]["cursewords"];
+=======
+const wordObjects = require('./Settings/botWords.json')
+
+let taggedCounter = 0; // used to measure the number of times the bot interacts, when it hits a certain number, it will take a nap 
+let goodbyeList = lists.botLists["possible"]["goodbye"]; 
+let cursewordList = lists.botLists["possible"]["cursewords"]
+>>>>>>> b9f87fb8ec18ebad2050ecdd176e035e33ec75b0
 
 class BabyBot {
 
@@ -31,7 +39,6 @@ class BabyBot {
     this.secToYear = setting.secToYear
     this.secToMonth = setting.secToMonth
     this.secToDay = setting.secToDay
-    this.held = false
     this.babyBotChannel = botRef
 
   }
@@ -73,9 +80,8 @@ class BabyBot {
         break
 
       // default:
-
       // this.currentState = new HungryState(this)
-      
+
     }
   }
 
@@ -125,6 +131,26 @@ class BabyBot {
     return [currentAgeInYear, currentAgeInMonth, currentAgeInDay]
   }
 
+  getAgeGroup(){
+
+    let ageInDay = this.getCurrentAgeInDay()
+
+    if (0 <= ageInDay < 720) {
+
+        return "0"
+               
+    }else if (720 <= ageInDay < 1440) {
+  
+        return "1"
+
+    }else if (1440 < ageInDay) {
+
+        return "2"
+
+    }
+
+  }
+
   onJoin(channelName){
 
     this.babyBotChannel.toHandler(channelName, '', setting.greetingMessage)
@@ -132,16 +158,20 @@ class BabyBot {
   }
 
 
-  onMessage ( channelName, context, msg, self) {
+  onMessage (channelName, context, msg, self) {
 
       let chatMsg = `[${channelName} (${context['message-type']})] ${context.username}: ${msg}` // + JSON.stringify(context)
       // saveChatMessage(chatMsg)
       console.log(chatMsg)
+<<<<<<< HEAD
       console.log(context)
 
       // A user has sent a message. Lets see if they are in our reputation database, if not, add them.
       // checkForUser(context.username, , true, true);
 
+=======
+      console.log(msg.length)
+>>>>>>> b9f87fb8ec18ebad2050ecdd176e035e33ec75b0
       let msgType = context["message-type"]
  
       // Ignore messages from the bot
@@ -152,7 +182,6 @@ class BabyBot {
         let prefix = msg.substr(0, 1)
         let parseMessage
      
-
         if (prefix === setting.commandPrefix) {
 
             parseMessage = msg.slice(1).split(' ')
@@ -162,20 +191,30 @@ class BabyBot {
         }else if (prefix === setting.tagPrefix) {
 
             parseMessage = msg.slice(1).split(' ')
+
             const taggedUser = parseMessage[0]
+
+            let newMsg = this.stripMsg(parseMessage.slice(1))
 
             if (taggedUser === setting.username) {
 
-                this.learnFromMessage(parseMessage, true)
+                this.learnFromMessage(newMsg, wordObjects.heavyWeight)
 
             }else {
 
-                this.learnFromMessage(parseMessage, false)
+                this.learnFromMessage(newMsg, wordObjects.lightWeight)
 
             }
 
-            responseMessage = this.getResponseToKeywords(parseMessage)
-            this.babyBotChannel.toHandler(channelName,responseMessage[0], responseMessage[1])
+            let responseMessage = this.getResponseToKeywords(newMsg)
+            this.babyBotChannel.toHandler("","", responseMessage)
+
+        }else{
+         
+          this.currentState.onMessage(msg.split(' '))
+          let newMsg = this.stripMsg(msg.split(' '))
+          this.learnFromMessage(newMsg, wordObjects.lightWeight)
+          
 
         }
         
@@ -192,22 +231,38 @@ class BabyBot {
           const commandName = parseMessage[0]
           this.currentState.onWhisperCommand(commandName, parseMessage[1], context.username)
 
+        }else{
+
+          let newMsg = this.stripMsg(msg.split(' '))
+          this.learnFromMessage(newMsg, wordObjects.heavyWeight)
+
         }
       }
           
     }
 
   }
+
+  stripMsg(msg){
+
+    let resultMsg = msg.filter(word => !wordObjects.meaninglessWords[word.toLowerCase()])
+    return resultMsg
+
+  }
+
   saveChatMessage (msg) {
     chatRecorder.storeMsg(msg)
   }
 
-  learnFromMessage (msg, weighted) {
-    if (weighted) {
-      console.log('Weight each word')
-    }else {
-      console.log('no weight')
-    }
+  learnFromMessage (msg, weight) {
+    msg.forEach(function(word){
+      if(wordObjects.learnedWords[word.toLowerCase()]){
+        wordObjects.learnedWords[word.toLowerCase()] += weight
+      }else{
+        wordObjects.learnedWords[word.toLowerCase()] = weight
+      }
+    })
+
   }
 
   getResponseToKeywords (msg) {
@@ -217,9 +272,15 @@ class BabyBot {
     let firstWord
     let secondWord
 
-    for (var i = 0; i < msg.length; i++) {
-      firstWord = msg[i]
+    // //   // This code loops through goodbye list and if it encounters a word from that list in the user's message, someone is saying 
+    // //   // goodbye so the bot should say something too. We would have to do this for every list so I'm trying to find a simpler way of doing it. 
+    // for ( var e = 0; e < goodbyeList.length; e++) {
+    //   if (msg[i] === goodbyeList[e]) {
+    //     console.log("no don't leave me")
+    //   }
+    // }
 
+<<<<<<< HEAD
       // This code loops through goodbye list and if it encounters a word from that list in the user's message, someone is saying 
       // goodbye so the bot should say something too. We would have to do this for every list so I'm trying to find a simpler way of doing it. 
       for ( var e = 0; e < goodbyeList.length; e++) {
@@ -227,20 +288,26 @@ class BabyBot {
           // do some if statements that check at status and based on status a different message will be sent
           if (getUserStatus(useranme) = "high") console.log("no don't leave me");
       }
+=======
+    // for ( var e = 0; e < cursewordList.length; e++) {
+    //   if (msg[i] === cursewordList[e]) {
+    //     console.log(msg[i] + '?')
+    //   }
+    // }
+>>>>>>> b9f87fb8ec18ebad2050ecdd176e035e33ec75b0
 
-      for ( var e = 0; e < cursewordList.length; e++) {
-        if (msg[i] === cursewordList[e]) {
-          console.log(msg[i] + '?')
-        }
-      }
+    for (var i = 0; i < msg.length; i++) {
+      firstWord = msg[i]
 
-      if (keywords[firstWord] && i + 1 <= msg.length) {
+      if (keywords[firstWord] && i + 1 < msg.length) {
         secondWord = msg[i + 1]
 
-        if (keywords[firstWord][secondWord]) {
+        if(keywords[firstWord][secondWord] && keywords[firstWord][secondWord].length != 0) {
+          
           let arrLen = keywords[firstWord][secondWord].length
           let randomNumber = Math.floor((Math.random() * arrLen))
           response = keywords[firstWord][secondWord][randomNumber]
+<<<<<<< HEAD
         }else {
           response = firstWord + ' what?'
         }
@@ -252,27 +319,28 @@ class BabyBot {
     return response
   }
 }
+=======
+>>>>>>> b9f87fb8ec18ebad2050ecdd176e035e33ec75b0
 
+        }else if(keywords[firstWord][secondWord] && keywords[firstWord][secondWord].length === 0){
 
-  getAgeGroup(){
+          response = "I don't think I have a " + firstWord + " " + secondWord + "." 
 
-    let ageInDay = this.getCurrentAgeInDay()
+        }else{
 
-    if (0 <= ageInDay < 720) {
+          keywords[firstWord][secondWord] = []
+          response = "I don't know too much about this topic, maybe you can tell me more."
 
-        return "0"
-               
-    }else if (720 <= ageInDay < 1440) {
-  
-        return "1"
+        }
 
-    }else if (1440 < ageInDay) {
+      }else if(keywords[firstWord] && i+1 === msg.length){
 
-
-        return "2"
-
+        response = firstWord + " what?"
+      }
     }
 
+    return response
+    
   }
 
   // // Check the user that interacted with the bot and see if they are in our database, if not add them.

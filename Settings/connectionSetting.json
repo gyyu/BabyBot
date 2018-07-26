@@ -1,11 +1,7 @@
 {
     
     "checkOfflineInterval" : 5000000,
-    "getRandomEventInterval" : 50000,
     
-    
-    "commandPrefix" : "!",
-    "tagPrefix" : "@",
     "channelUrl" : "https://api.twitch.tv/kraken/streams/kisakana",
     "headers" : {
         "Client-ID" : "fc9g5vx67vel9jme7vd0kvfqueqrj5"
@@ -13,8 +9,8 @@
 
     "opts" : {
         "identity" : {
-            "username" : "sakanatest2",
-            "password" : "oauth:p9mil3vb45xxkr7pkt2d4nhrxv0f4z"
+            "username" : "sakanatest",
+            "password" : "oauth:3w1uj02qrf6imeyoldjg6y8ti3bbmg"
         },
         "channels" : [
             "kisakana"

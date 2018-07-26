@@ -1,6 +1,13 @@
 {
 
-    "eventInterval" : [1000,3000,5000],
+    "eventInterval" : [1000000,3000000,5000000],
+
+    "copyPastaProbability" :{
+
+        "encouraged" : 0,
+        "discouraged" : 0
+
+    },
 
     "response": {
 
@@ -28,6 +35,22 @@
             "1" : ["NO!!", "NoNoNo!!!"],
             "2" : ["Don't want to change"]
 
+
+        },
+
+        "YayCopyPasta" : {
+
+            "0" : ["YayCopyPasta" , "YayCopyPasta"],
+            "1" : ["YayCopyPasta", "YayCopyPasta"],
+            "2" : ["YayCopyPasta"]
+
+        },
+
+        "NoCopyPasta" : {
+
+            "0" : ["NoCopyPasta" , "NoCopyPasta"],
+            "1" : ["NoCopyPasta", "NoCopyPasta"],
+            "2" : ["NoCopyPasta"]
 
         },
 

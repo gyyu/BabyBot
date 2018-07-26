@@ -59,7 +59,7 @@
 
 ### babyBotDiaperChangingState.js
 #### diaperChangeState.json
-- Needs to change diaper
+- Needs to change the bot's diaper
 - Will keep on sending request until users used the Change command
 - Goes back to Normal state once the diaper is changed
 
