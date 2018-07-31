@@ -6,6 +6,6 @@ const babyBotChannel = new BabyBotChannel()
 const twitchHandler = new TwitchHandler()
 const babyBot = new BabyBot(babyBotChannel)
 
-babyBotChannel.setMethods(babyBot.onMessage.bind(babyBot),twitchHandler.sendMessage.bind(twitchHandler), babyBot.onJoin.bind(babyBot))
+babyBotChannel.setMethods(babyBot.onMessage.bind(babyBot),twitchHandler.queueMessage.bind(twitchHandler), babyBot.onJoin.bind(babyBot), babyBot.onOffline.bind(babyBot))
 twitchHandler.initialize(babyBotChannel)
 

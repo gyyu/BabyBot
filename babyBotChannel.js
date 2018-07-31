@@ -1,10 +1,11 @@
 
 module.exports = class BabyBotChannel{
 
-    setMethods(toBotMethod, toHandlerMethod, joinSuccessMethod){
+    setMethods(toBotMethod, toHandlerMethod, joinSuccessMethod, offlineMethod){
         this.msgToBot = toBotMethod
         this.msgToHandler = toHandlerMethod
         this.onJoin = joinSuccessMethod
+        this.offLine = offlineMethod
     }
   
     toBot( channelName, context, msg, self){
@@ -20,13 +21,18 @@ module.exports = class BabyBotChannel{
 
     }
 
-    onJoinSuccessful(target){
+    onJoinSuccessful(username){
 
-        this.onJoin(target)
+        this.onJoin(username)
 
     }
 
 
+    onStreamOffline(){
+
+        this.offLine()
+
+    }
 
 
 

@@ -6,7 +6,7 @@
    
     "response": {
 
-        "Feed" : {
+        "feed" : {
 
             "0" : ["ZZZZ" , "ZZZ"],
             "1" : ["ZZZ ZZZ", "ZZZzz ZZZ zz ZZZ"],
@@ -15,7 +15,14 @@
 
         },
 
-        "Change" :{
+        "change" :{
+            "0" : ["ZZZZ" , "ZZZ"],
+            "1" : ["ZZZ ZZZ", "ZZZzz ZZZ zz ZZZ"],
+            "2" : ["ZZZzz ZZZ"]
+
+        },
+
+        "hold" : {
             "0" : ["ZZZZ" , "ZZZ"],
             "1" : ["ZZZ ZZZ", "ZZZzz ZZZ zz ZZZ"],
             "2" : ["ZZZzz ZZZ"]
@@ -24,16 +31,7 @@
 
         },
 
-        "Hold" : {
-            "0" : ["ZZZZ" , "ZZZ"],
-            "1" : ["ZZZ ZZZ", "ZZZzz ZZZ zz ZZZ"],
-            "2" : ["ZZZzz ZZZ"]
-
-
-
-        },
-
-        "Nap" : {
+        "nap" : {
 
             "0" : ["ZZZZ" , "ZZZ"],
             "1" : ["ZZZ ZZZ", "ZZZzz ZZZ zz ZZZ"],
@@ -42,7 +40,7 @@
 
         },
 
-        "NoCommandFound" : {
+        "noCommandFound" : {
 
 
             "0" : ["NoCommandFoundZZZZ" , "NoCommandFoundZZZZ"],

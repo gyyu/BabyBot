@@ -1,109 +1,98 @@
 {
-
-    "eventInterval" : [1000000,3000000,5000000],
-
-    "copyPastaProbability" :{
-
-        "encouraged" : 0,
-        "discouraged" : 0
-
-    },
-
-    "curseProbability" :{
-
-        "encouraged" : 0,
-        "discouraged" : 0
-
-    },
-
-    "emoteProbability": {
-
-        "upperRange" : 2,
-        "lowerRange" : -1
-    },
-
-    "emoteList" : {
-        "BibleThump" : true,      
-        "BigBrother": true,
-        "BigPhish": true,
-        "BisexualPride": true,
-       "BlargNaut": true,
-        "BlessRNG": true,
-        "BloodTrail": true,
-        "BrainSlug": true,
-        "BrokeBack": true,
-        "BuddhaBar": true,   
-        "CarlSmile": true,
-        "ChefFrank": true
-        },
-
-    "askedWord" : {
-
-    },
-
-    "response": {
-
-        "Feed" : {
-
-            "0" : [":(" , ":/"],
-            "1" : ["Not hungry", "Don't want to eat"],
-            "2" : ["Don't want to eat"]
-
-
-        },
-
-        "Change" :{
-
-            "0" : [":(!!!" , ":/!!!!"],
-            "1" : ["NO!!", "NoNoNo!!!"],
-            "2" : ["Don't want to change"]
-
-
-        },
-
-        "Hold" : {
-
-            "0" : [":(!!!" , ":/!!!!"],
-            "1" : ["NO!!", "NoNoNo!!!"],
-            "2" : ["Don't want to change"]
-
-
-        },
-
-        "YayCopyPasta" : {
-
-            "0" : ["YayCopyPasta" , "YayCopyPasta"],
-            "1" : ["YayCopyPasta", "YayCopyPasta"],
-            "2" : ["YayCopyPasta"]
-
-        },
-
-        "NoCopyPasta" : {
-
-            "0" : ["NoCopyPasta" , "NoCopyPasta"],
-            "1" : ["NoCopyPasta", "NoCopyPasta"],
-            "2" : ["NoCopyPasta"]
-
-        },
-
-        "NoCommandFound" : {
-
-
-            "0" : ["NoCommandFound" , "NoCommandFound"],
-            "1" : ["NoCommandFound", "NoCommandFound"],
-            "2" : ["NoCommandFound"]
-
-
-
-        },
-
-        "YayCurse" :{},
-        "NoCurse" : {}
-
-
-
-    }
-
-
-
+	"stateCommands": {
+		"hold": true,
+		"feed": true,
+		"growthreport": true,
+		"change": true,
+		"yaycopypasta": true,
+		"nocopypasta": true,
+		"yaycurse": true,
+		"nocurse": true
+	},
+	"eventInterval": [
+		1000,
+		3000,
+		5000
+	],
+	"copyPastaProbability": {
+		"encouraged": 0,
+		"discouraged": 0
+	},
+	"curseProbability": {
+		"encouraged": 0,
+		"discouraged": -1
+	},
+	"emoteProbability": {
+		"upperRange": 2,
+		"lowerRange": -1
+	},
+	"emoteList": {
+		"biblethump": "BibleThump",
+		"bigbrother": "BigBrother",
+		"bigphish": "BigPhish",
+		"bisexualpride": "BisexualPride",
+		"blargnaut": "BlargNaut",
+		"blessrng": "BlessRNG",
+		"bloodtrail": "BloodTrail",
+		"brainslug": "BrainSlug",
+		"brokeback": "BrokeBack",
+		"buddhabar": "BuddhaBar",
+		"carlsmile": "CarlSmile",
+		"cheffrank": "ChefFrank"
+	},
+	"askedWord": {},
+	"response": {
+		"feed": {
+			"0": [
+				":(",
+				":/"
+			],
+			"1": [
+				"Not hungry",
+				"Don't want to eat"
+			],
+			"2": [
+				"Don't want to eat"
+			]
+		},
+		"change": {
+			"0": [
+				":(!!!",
+				":/!!!!"
+			],
+			"1": [
+				"NO!!",
+				"NoNoNo!!!"
+			],
+			"2": [
+				"Don't want to change"
+			]
+		},
+		"hold": {
+			"0": [
+				":(!!!",
+				":/!!!!"
+			],
+			"1": [
+				"NO!!",
+				"NoNoNo!!!"
+			],
+			"2": [
+				"Don't want to change"
+			]
+		},
+		"noCommandFound": {
+			"0": [
+				"NoCommandFound",
+				"NoCommandFound"
+			],
+			"1": [
+				"NoCommandFound",
+				"NoCommandFound"
+			],
+			"2": [
+				"NoCommandFound"
+			]
+		}
+	}
 }

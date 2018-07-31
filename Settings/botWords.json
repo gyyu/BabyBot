@@ -3,18 +3,39 @@
     "heavyWeight" : 2,
     "lightWeight" : 1,
     "meaninglessWords" : {
-        "a" : 1,
-        "am" : 1,
-        "is" : 1,
-        "are" : 1,
-        "isn't" : 1,
-        "aren't" : 1
+        "a" : true,
+        "am" : true,
+        "is" : true,
+        "are" : true,
+        "isn't" : true,
+        "aren't" : true
 
     },
 
     "learnedWords" : {
 
+    },
+
+    "keywords" : {
+
+        "favorite" : {
+            "car" : ["BMW" , "Ford", "Benz" , "Honda", "Toyota", "Nissan", "Subaru"],
+            "fruit" : ["Cherry", "Apple"]
+
+        },
+
+        "dislike" : {
+
+
+
+        }
+
+    },
+
+    "knownWords" : {
+
+
+
+
     }
-
-
 }

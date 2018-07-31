@@ -1,16 +1,32 @@
 {
     
-   
-    "exitDelay" : 0,
-    "wordWeight" : 3,
+    "age":0,
+    "secToYear" : 720,
+    "secToMonth" : 30,
+    "secToDay" : 2,
+    "exitDelay" : 5000,
 
-    "commands" : [
+    "stateNames" : ["Crying", "Diaper-Changing", "Hungry", "Normal"],
 
-        "growthReport"
-    ]
+    "commandPrefix" : "!",
+    "tagPrefix" : "@",
 
-   
+    "greetingMessage" : {
 
+        "0" : "/me BabyBot has arrived. Please take good care of it.",
+        "1" : "/me BabyBot is back! Please continue to raise it", 
+        "2" : "/me BabyBot has been learning so much from you! Please continue to educate it to be a better bot!"
 
+    },
     
+    "exitMessage" : {
+
+        "0" : "/me BabyBot had lots of fun today! Thank you and see you next time!",
+        "1" : "/me BabyBot learned a lot today! Great job everyone and seeya!", 
+        "2" : "/me BabyBot had lots of fun learning and hanging out with you guys! See you next time!"
+
+    },
+
+    "fullyGrownMessage" : "Thank you so much for raising me. Now I'm ready to go out and face the world! Don't forget me! :D"
+   
 }

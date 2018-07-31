@@ -10,22 +10,23 @@ class CryingState extends BabyBotStateParent{
     this.cryingResponse = cryState.response
     this.stateMessage = cryState.message
     this.counter = 0
-    this.sendMessage("","", this.stateMessage)  
-    this.cryingIntervalID =setInterval(this.sendMessage.bind(this, "","", this.stateMessage), cryState.messageInterval)
+    this.botFeeling = cryState.botFeeling
+    this.sendMessage(this.stateMessage)  
+    this.cryingIntervalID =setInterval(this.sendMessage.bind(this,this.stateMessage), cryState.messageInterval)
 }
 
   onCommand (cmdName, param= "", cmdUser ="") {
 
-    let ageGroup = this.getAgeGroup()
+    let ageGroup = this.ageGroup
     let response
 
     if(!this.cryingResponse[cmdName]){
              
-      cmdName = "NoCommandFound"
+      cmdName = "noCommandFound"
 
     }
 
-    if(!this.holder && cmdName === 'Hold'){
+    if(!this.holder && cmdName === 'hold'){
         
         this.startTime = (new Date).getTime()
         this.holder = cmdUser
@@ -41,11 +42,17 @@ class CryingState extends BabyBotStateParent{
         // The user did something positive so give him positive points
         // addPoints(this.holder, cmdName)
 
-        this.sendMessage(this.holder,'whisper', response)
-      
-    }else if(!this.holder && cmdName === "Nap"){
+        this.gettingBetterID = setInterval(function(){
 
-      clearTimeout(this.cryingIntervalID)
+          if(this.botFeeling.length != 0){
+            this.sendMessage(this.botFeeling.shift(), this.holder,'whisper')
+          }
+        
+        }.bind(this), cryState.moodChangeInterval)
+      
+    }else if(!this.holder && cmdName === "nap"){
+
+      clearInterval(this.cryingIntervalID)
       this.toNappingState()
       
     }else if(!this.holder){
@@ -55,36 +62,31 @@ class CryingState extends BabyBotStateParent{
 
       response = this.cryingResponse[cmdName][ageGroup][ranNum]
 
-      this.sendMessage("","", response)
+      this.sendMessage(response)
 
     }else if(this.holder && cmdUser !== this.holder){
 
-      this.sendMessage("","", "/me " + this.holder + " is holding the bot. It can't hear you.")
+      this.sendMessage("/me " + this.holder + " is holding the bot. It can't hear you.")
 
     }else if(cmdUser === this.holder){
 
-      this.sendMessage(this.holder, "whisper", "I can't hear you, please whisper to me :)")
+      this.sendMessage("I can't hear you, please whisper to me :)", this.holder, "whisper")
 
     }
 }
 
 onWhisperCommand(cmdName, param= "", cmdUser =""){
 
-  console.log("Put baby Down" + cmdUser + " " + cmdUser)
-
-  if(cmdUser === this.holder && cmdName === "PutDown"){
-    
-   
+  if(cmdUser === this.holder && cmdName === "putdown"){
     this.holder = null
-
-    clearTimeout(this.holdTimeDurationID)
+    this.clearIntervals()
 
     this.endTime = (new Date).getTime()
     this.counter += (this.endTime - this.startTime)
-  
+    console.log(this.counter)
     if(this.counter < cryState.requiredHoldingTime){
       
-      this.cryingIntervalID = setInterval(this.sendMessage.bind(this, "","", this.stateMessage), cryState.messageInterval)
+      this.cryingIntervalID = setInterval(this.sendMessage.bind(this, this.stateMessage), cryState.messageInterval)
     
     }else{
 
@@ -92,23 +94,54 @@ onWhisperCommand(cmdName, param= "", cmdUser =""){
 
     }
 
-    this.sendMessage("","", "/me " +cmdUser+ " has put down the bot")
+    this.sendMessage( "/me " +cmdUser+ " has put down the bot")
 
   }else{
 
-    this.sendMessage(this.holder,"whisper", "I don't understand, why are you telling me to do things now :'(")
+    this.sendMessage( "I don't understand, why are you telling me to do things now :'(", this.holder,"whisper")
 
   }
 
+}
+
+onTagged(msg, cmdUser = ""){
+
+  if(this.holder && cmdUser != this.holder){
+
+    this.sendMessage("/me " + this.holder + " is holding the bot. It can't hear you.")
+
+  }else if(cmdUser === this.holder){
+
+    this.sendMessage("I can't hear you, please whisper to me :)", this.holder, "whisper")
+
+  }else{
+
+    this.this.sendMessage(cryState.message + " Somebody hold me please :(")
+
+  }
 
 }
 
   endCryingState(){
 
-    this.sendMessage(this.holder,"whisper",cryState.endingMessage)
+    this.clearIntervals()
+
+    setTimeout(function(){this.sendMessage(cryState.endingMessage,this.holder,"whisper")}.bind(this), 2000)
     this.toNormalState()
 
   }
+
+  clearIntervals(){
+
+    clearTimeout(this.holdTimeDurationID)
+    clearInterval(this.cryingIntervalID)
+    clearInterval(this.gettingBetterID)
+
+  }
+
+  saveStatus(){}
+
+  onMessage(){}
 
 }
 

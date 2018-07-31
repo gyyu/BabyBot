@@ -1,7 +1,7 @@
 {
     
-    "checkOfflineInterval" : 5000000,
-    
+    "checkOfflineInterval" : 150000,
+    "messageInterval" : 3000,
     "channelUrl" : "https://api.twitch.tv/kraken/streams/kisakana",
     "headers" : {
         "Client-ID" : "fc9g5vx67vel9jme7vd0kvfqueqrj5"

@@ -1,17 +1,19 @@
 const fs = require('fs')
-const beginningState = require('./Settings/botState.json')
+const botRecorderSetting = require('./Settings/botRecorderSetting.json')
 const BotStateRecorder = {
 
-    saveState : function(botState){
 
-        fs.writeFileSync('./Outputs/botState.json', JSON.stringify(botState))
-
+    getTimeStamp(){
+        let date = new Date()
+        return date.getFullYear() + "" + date.getMonth() + 1  + "" +  date.getDate()
     },
 
-    backupState : function(){
+    saveJson : function(outputJson, fileName){
+        fs.writeFileSync(botRecorderSetting.outputPath + fileName + '.json', JSON.stringify(outputJson, null, '\t'))
+    },
 
-        fs.writeFileSync('./Outputs/botState_' + Date.now() +'.json', JSON.stringify(beginningState))
-
+    backupJson : function(outputJson, fileName){
+        fs.writeFileSync(botRecorderSetting.backupOutputPath + fileName + '_' + this.getTimeStamp() +'.json', JSON.stringify(outputJson, null, '\t'))       
     }
 
 

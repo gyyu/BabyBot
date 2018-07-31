@@ -1,6 +1,7 @@
-const setting = require('./Settings/botState.json')
-const wordObjects = require('./Settings/botWords.json')
-const chatRecorder = require('./chatRecorder.js')
+const setting = require('./Settings/botSetting.json')
+const wordList = require('./Settings/botWords.json')
+const ChatRecorder = require('./chatRecorder.js')
+const botRecorder = require('./botStateRecorder.js')
 const NormalState = require('./babyBotNormalState.js')
 const CryingState = require('./babyBotCryingState.js')
 const NappingState = require('./babyBotNappingState.js')
@@ -19,31 +20,34 @@ const lists = require('./Settings/botLists.json')
 // let modPoints = 2;
 // let subPoints = 3;
 
-let taggedCounter = 0; // used to measure the number of times the bot interacts, when it hits a certain number, it will take a nap 
 let goodbyeList = lists.botLists["possible"]["goodbye"]; 
 let cursewordList = lists.botLists["possible"]["cursewords"];
 
 class BabyBot {
 
   constructor (botRef) {
-    this.currentState = new NormalState(this)
     this.startTime = (new Date).getTime()
     this.beginingAge = setting.age
     this.secToYear = setting.secToYear
     this.secToMonth = setting.secToMonth
     this.secToDay = setting.secToDay
     this.babyBotChannel = botRef
-
+    botRecorder.backupJson(setting, "setting")
+    botRecorder.backupJson(wordList, "wordList")
+    this.chatRecorder = new ChatRecorder()
+    this.getAgeGroup()
+    this.checkAgeGroupIntervalID = setInterval(this.getAgeGroup.bind(this), 5000)
+    this.currentState = new NormalState(this)
   }
 
-  say(target, type, msg){
+  say(msg, target = "channel", type = 'chat'){
 
-    this.babyBotChannel.toHandler(target, type, msg)
+    this.babyBotChannel.toHandler(msg, target, type)
 
   }
 
   changeState () {
-
+    this.currentState.clearIntervals()
     let len = setting.stateNames.length
     let ran = Math.floor(Math.random() * len)
     let stateName = setting.stateNames[ran]
@@ -73,13 +77,13 @@ class BabyBot {
         break
 
       // default:
-      // this.currentState = new HungryState(this)
+      // this.currentState = new CryingState(this)
 
     }
   }
 
   changeToNappingState(){
-
+    this.currentState.clearIntervals()
     if(!(this.currentState instanceof NappingState)){
 
       this.currentState = new NappingState(this)
@@ -89,7 +93,7 @@ class BabyBot {
   }
 
   changeToNormalState(){
- 
+    this.currentState.clearIntervals()
     if(!(this.currentState instanceof NormalState)){
 
       this.currentState = new NormalState(this)
@@ -98,7 +102,7 @@ class BabyBot {
 
   }
 
-  getCurrentAgeInDay () {
+  getAgeInDay () {
     let currentTime = (new Date).getTime()
     let ageInSeconds = (currentTime - this.startTime) / 1000
 
@@ -109,61 +113,74 @@ class BabyBot {
   }
 
   getAgeInYMD () {
-    let currentAge = this.getCurrentAgeInDay()
+    let currentAge = this.getAgeInDay()
 
-    let currentAgeInYear = Math.floor(currentAge / secToYear)
-    let remainMonth = currentAge - currentAgeInYear * secToYear
+    let currentAgeInYear = Math.floor(currentAge / this.secToYear)
+    let remainMonth = currentAge - currentAgeInYear * this.secToYear
 
-    let currentAgeInMonth = Math.floor(remainMonth / secToMonth)
-    let remainDay = remainMonth - currentAgeInMonth * secToMonth
+    let currentAgeInMonth = Math.floor(remainMonth / this.secToMonth)
+    let remainDay = remainMonth - currentAgeInMonth * this.secToMonth
 
-    let currentAgeInDay = Math.floor((remainDay % secToMonth))
-
-    console.log(currentAgeInYear + ' ' + currentAgeInMonth + ' ' + currentAgeInDay)
+    let currentAgeInDay = Math.floor((remainDay % this.secToMonth))
 
     return [currentAgeInYear, currentAgeInMonth, currentAgeInDay]
   }
 
   getAgeGroup(){
+    
+    let ageInDay = this.getAgeInDay()
+    
+    if( ageInDay >= this.secToYear * 3){
 
-    let ageInDay = this.getCurrentAgeInDay()
+      clearInterval(this.checkAgeGroupIntervalID)
+      this.say(setting.fullyGrownMessage)
+      this.currentState.clearIntervals()
+      setTimeout(function(){
+        this.saveAndExit()
+      }.bind(this), setting.exitDelay)
 
-    if (0 <= ageInDay < 720) {
+    }else if(ageInDay >= this.secToYear *2){
 
-        return "0"
-               
-    }else if (720 <= ageInDay < 1440) {
-  
-        return "1"
+      this.ageGroup = "2"
+    
+    }else if(ageInDay >= this.secToYear){
+     
+      this.ageGroup = "1"
 
-    }else if (1440 < ageInDay) {
+    }else if(ageInDay >= 0){
 
-        return "2"
-
+      this.ageGroup = "0"
+    
     }
 
   }
 
-  onJoin(channelName){
+  onOffline(){
 
-    this.babyBotChannel.toHandler(channelName, '', setting.greetingMessage)
+    this.say(setting.exitMessage[this.ageGroup])
+    this.currentState.clearIntervals()
+    this.currentState.saveStatus()
+    setTimeout(function(){
+      this.saveAndExit()
+    }.bind(this), setting.exitDelay)
+
+  }
+
+  onJoin(username){
+    this.username = username
+    this.say(setting.greetingMessage[this.ageGroup])
 
   }
 
   onMessage (channelName, context, msg, self) {
 
       let chatMsg = `[${channelName} (${context['message-type']})] ${context.username}: ${msg}` // + JSON.stringify(context)
-      // saveChatMessage(chatMsg)
+      this.saveChatMessage(chatMsg)
       console.log(chatMsg)
-      //console.log(context)
 
-     // msg = msg.toLowerCase()
-      // A user has sent a message. Lets see if they are in our reputation database, if not, add them.
-      // checkForUser(context.username, , true, true);
-
+      msg = msg.toLowerCase()
       let msgType = context["message-type"]
  
-      // Ignore messages from the bot
       if (self) {return}
 
       if(msgType === "chat"){
@@ -185,24 +202,23 @@ class BabyBot {
 
             let newMsg = this.stripMsg(parseMessage.slice(1))
 
-            if (taggedUser === setting.username) {
+            if (taggedUser === this.username) {
 
-                this.learnFromMessage(newMsg, wordObjects.heavyWeight)
+                this.learnFromMessage(newMsg, wordList.heavyWeight)
 
             }else {
 
-                this.learnFromMessage(newMsg, wordObjects.lightWeight)
+                this.learnFromMessage(newMsg, wordList.lightWeight)
 
             }
 
-            let responseMessage = this.getResponseToKeywords(newMsg)
-            this.babyBotChannel.toHandler("","", responseMessage)
+            this.currentState.onTagged(newMsg)
 
         }else{
          
           this.currentState.onMessage(msg.split(' '))
           let newMsg = this.stripMsg(msg.split(' '))
-          this.learnFromMessage(newMsg, wordObjects.lightWeight)
+          this.learnFromMessage(newMsg, wordList.lightWeight)
           
         }
         
@@ -222,7 +238,7 @@ class BabyBot {
         }else{
 
           let newMsg = this.stripMsg(msg.split(' '))
-          this.learnFromMessage(newMsg, wordObjects.heavyWeight)
+          this.learnFromMessage(newMsg, wordList.heavyWeight)
 
         }
       }
@@ -233,28 +249,41 @@ class BabyBot {
 
   stripMsg(msg){
 
-    let resultMsg = msg.filter(word => !wordObjects.meaninglessWords[word.toLowerCase()])
+    let resultMsg = msg.filter(word => !wordList.meaninglessWords[word.toLowerCase()])
     return resultMsg
 
   }
 
   saveChatMessage (msg) {
-    chatRecorder.storeMsg(msg)
+    
+    this.chatRecorder.storeMsg(msg)
+    
   }
 
   learnFromMessage (msg, weight) {
     msg.forEach(function(word){
-      if(wordObjects.learnedWords[word.toLowerCase()]){
-        wordObjects.learnedWords[word.toLowerCase()] += weight
+      if(wordList.learnedWords[word.toLowerCase()]){
+        wordList.learnedWords[word.toLowerCase()] += weight
       }else{
-        wordObjects.learnedWords[word.toLowerCase()] = weight
+        wordList.learnedWords[word.toLowerCase()] = weight
       }
     })
 
   }
 
+  saveAndExit(){
+   
+    setting.age = this.getAgeInDay()
+    botRecorder.saveJson(setting, "botSetting")
+    botRecorder.saveJson(wordList, "botWords")
+    this.chatRecorder.saveMsg()
+    setTimeout(function(){
+      process.exit(1)
+    }, 5000)
+  }
+
   getResponseToKeywords (msg) {
-    console.log(msg)
+    
     let response = "I don't understand"
     let keywords = setting.keywords
     let firstWord
@@ -270,12 +299,12 @@ class BabyBot {
 
       // This code loops through goodbye list and if it encounters a word from that list in the user's message, someone is saying 
       // goodbye so the bot should say something too. We would have to do this for every list so I'm trying to find a simpler way of doing it. 
-      for ( var e = 0; e < goodbyeList.length; e++) {
-        if (msg[i] === goodbyeList[e]) {
-          // do some if statements that check at status and based on status a different message will be sent
-          if (getUserStatus(useranme) = "high") console.log("no don't leave me");
-      }
-    }
+    //   for ( var e = 0; e < goodbyeList.length; e++) {
+    //     if (msg[i] === goodbyeList[e]) {
+    //       // do some if statements that check at status and based on status a different message will be sent
+    //       if (getUserStatus(useranme) = "high") console.log("no don't leave me");
+    //   }
+    // }
     for (var i = 0; i < msg.length; i++) {
       firstWord = msg[i]
 

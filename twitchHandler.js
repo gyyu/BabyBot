@@ -3,19 +3,15 @@ const setting = require('./Settings/connectionSetting.json')
 const opts = setting.opts
 
 class TwitchHandler {
-  
-  constructor () {
 
-  }
+  constructor () {}
 
-  initialize(botChannelRef){
-
-    
+  initialize (botChannelRef) {
     this.babyBotChannel = botChannelRef
 
     // Create a client with our options:
     let client = new tmi.client(opts)
-
+    this.msgQueue = []
     // Register our event handlers (defined below):
     client.on('message', this.onMessageHandler.bind(this))
     client.on('connected', this.onConnectedHandler.bind(this))
@@ -26,24 +22,24 @@ class TwitchHandler {
     client.connect()
 
     this.client = client
+    this.checkStreamIntervalID = setInterval(this.checkStreamIsOffLine.bind(this), setting.checkOfflineInterval)
     
   }
 
   // // Helper to send the correct type of message:
-  sendMessage (target, messageType, message) {
-  
-    if(target === ""){
+  queueMessage (message, target , messageType = 'chat') {
 
+    if(target === 'channel') {
       target = opts.channels[0]
-    
     }
     
-    if (messageType === 'whisper') {
-      this.client.whisper(target, message)
-    } else {
-      
-      this.client.say(target, message)
+    let msgObj = {
+      type: messageType,
+      destination: target,
+      content: message
     }
+    this.msgQueue.push(msgObj)
+
   }
 
   checkStreamIsOffLine () {
@@ -57,17 +53,30 @@ class TwitchHandler {
         return
       }else {
         clearInterval(this.checkStreamIntervalID)
-        exitMessage = babyBotService.getExitMessage()
-        //sendMessage(opts.channels[0], opts, exitMessage)
-        babyBotService.saveAndExit()
+        this.babyBotChannel.onStreamOffline()
       }
-    })
+    }.bind(this))
   }
 
   onJoinHandler (target, username, self) {
-
     if (self) {
-      this.babyBotChannel.onJoinSuccessful(target)
+      this.babyBotChannel.onJoinSuccessful(username)
+
+      setInterval(function () {
+        console.log(this.msgQueue)
+        if(this.msgQueue.length != 0){
+
+          let msgObj = this.msgQueue.shift()
+
+          
+          if (msgObj.type === 'whisper') {
+            this.client.whisper(msgObj.destination, msgObj.content)
+          } else {
+            this.client.say(msgObj.destination, msgObj.content)
+          }
+        }
+       
+      }.bind(this), setting.messageInterval)
     }
 
     console.log(username + ' enters the chat')
@@ -75,27 +84,20 @@ class TwitchHandler {
 
   // // Called every time a message comes in:
   onMessageHandler (target, context, msg, self) {
-  
-    this.babyBotChannel.toBot( target, context, msg, self)
-    
+    this.babyBotChannel.toBot(target, context, msg, self)
   }
 
   // Called every time the bot connects to Twitch chat:
   onConnectedHandler (addr, port) {
-
     console.log(`* Connected to ${addr}:${port}`)
-
   }
 
   // Called every time the bot disconnects from Twitch:
   onDisconnectedHandler (reason) {
-
     console.log(`Womp womp, disconnected: ${reason}`)
     process.exit(1)
-   
   }
 
 }
 
 module.exports = TwitchHandler
-

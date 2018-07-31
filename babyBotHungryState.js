@@ -1,4 +1,5 @@
 const hungryState = require('./Settings/hungryState.json')
+const botRecorder = require('./botStateRecorder.js')
 const BabyBotStateParent = require('./babyBotStateParent.js')
 
 
@@ -9,38 +10,39 @@ class HungryState extends BabyBotStateParent{
     super(botRef)
     this.hungryResponse = hungryState.response
     this.stateMessage = hungryState.message
-    this.sendMessage("","", this.stateMessage)  
-    this.requestFeedingIntervalID = setInterval(this.sendMessage.bind(this, "","", this.stateMessage), hungryState.messageInterval)
+    this.sendMessage(this.stateMessage)  
+    this.requestFeedingIntervalID = setInterval(this.sendMessage.bind(this,this.stateMessage), hungryState.messageInterval)
 }
 
   onCommand (cmdName, food = "") {
 
-    let ageGroup = this.getAgeGroup()
+    let ageGroup = this.ageGroup
 
     if(!this.hungryResponse[cmdName]){
             
-        cmdName = "NoCommandFound"
+        cmdName = "noCommandFound"
 
     }
     
-    if (cmdName === 'Feed') {
+    if (cmdName === 'feed') {
 
         if(food === ""){
 
-            this.sendMessage("","chat", "What to eat?") 
+            this.sendMessage( "What to eat?") 
 
         }
-        food = food.toLowerCase()
+
         if(hungryState.knownFood[food]){
 
             if(hungryState.knownFood[food] === 1){
 
-                this.sendMessage("","chat", "Yum yum! :)") 
+                this.sendMessage("Yum yum! :)") 
 
             }else{
-                this.sendMessage("","chat", "Eh better than nothing! :/") 
+                this.sendMessage("Eh better than nothing! :/") 
             }
-            clearInterval(this.requestFeedingIntervalID)
+
+            this.clearIntervals()
             this.toNormalState()
 
 
@@ -49,31 +51,45 @@ class HungryState extends BabyBotStateParent{
             let ranInt = Math.floor(Math.random()*Math.floor(2))
             if(ranInt){
                 hungryState.knownFood[food] = 1
-                this.sendMessage("","chat", "I don't know what is "+ food +"... But I'll give it a try!.....And it taste good!")
+                this.sendMessage("I don't know what is "+ food +"... But I'll give it a try!.....And it taste good!")
 
             }else{
                 hungryState.knownFood[food] = -1
-                this.sendMessage("","chat", "I don't know what is "+ food +"... But I'll give it a try!....Ewww!!! :(")
+                this.sendMessage( "I don't know what is "+ food +"... But I'll give it a try!....Ewww!!! :(")
             }
             
-            console.log(hungryState.knownFood)
-
-            clearInterval(this.requestFeedingIntervalID)
+            this.clearIntervals()
+            this.saveStatus()
             this.toNormalState()
         }
            
     }else{
-        
+
         let listLength = this.hungryResponse[cmdName][ageGroup].length
         let ranNum = Math.floor(Math.random() * listLength)
     
         let response = this.hungryResponse[cmdName][ageGroup][ranNum]
     
-        this.sendMessage("","chat", response)
+        this.sendMessage(response)
 
     }
 
     
+  }
+
+  onMessage(){}
+
+  onTagged(msg){}
+
+  clearIntervals(){
+
+    clearInterval(this.requestFeedingIntervalID)
+
+  }
+
+  saveStatus(){
+
+    botRecorder.saveJson(hungryState, "hungryState")
   }
 
 }

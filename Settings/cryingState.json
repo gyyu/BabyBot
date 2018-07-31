@@ -1,21 +1,22 @@
 {
 
     "messageInterval" : 10000,
-    "requiredHoldingTime" : 100000,
+    "requiredHoldingTime" : 10000,
+    "moodChangeInterval" : 2000,
     "message" : "Waaaaa Waaaaa WAAAAAAAAAA",
-    "endingMessage" : "I feel better now",
+    "endingMessage" : "<3",
+
+    "botFeeling" : [">(",":(",":/",":)",":D"],
     "response": {
 
-        "Feed" : {
+        "feed" : {
 
             "0" : [":(" , ":/"],
             "1" : ["NO", "NoNoNo"],
             "2" : ["Don't want to eat"]
-
-
         },
 
-        "Change" :{
+        "change" :{
 
             "0" : [":(!!!" , ":/!!!!"],
             "1" : ["NO!!", "NoNoNo!!!"],
@@ -24,7 +25,7 @@
 
         },
 
-        "Hold" : {
+        "hold" : {
 
             "0" : [":(!!!" , ":/!!!!"],
             "1" : ["NO!!", "NoNoNo!!!"],
@@ -33,7 +34,7 @@
 
         },
 
-        "Nap" : {
+        "nap" : {
 
             "0" : ["np nap" , "dont want nap"],
             "1" : ["ZZZ ZZZ", "ZZZzz ZZZ zz ZZZ"],
@@ -42,7 +43,7 @@
 
         },
 
-        "NoCommandFound" : {
+        "noCommandFound" : {
 
 
             "0" : ["NoCommandFound" , "NoCommandFound"],

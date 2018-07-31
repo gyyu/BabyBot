@@ -5,7 +5,7 @@
 
     "response": {
 
-        "Feed" : {
+        "feed" : {
 
             "0" : [":(" , ":/"],
             "1" : ["Not hungry", "Don't want to eat"],
@@ -14,7 +14,7 @@
 
         },
 
-        "Change" :{
+        "change" :{
 
             "0" : [":(!!!" , ":/!!!!"],
             "1" : ["NO!!", "NoNoNo!!!"],
@@ -23,7 +23,7 @@
 
         },
 
-        "Hold" : {
+        "hold" : {
 
             "0" : [":(!!!" , ":/!!!!"],
             "1" : ["NO!!", "NoNoNo!!!"],
@@ -32,7 +32,7 @@
 
         },
 
-        "Nap" : {
+        "nap" : {
 
             "0" : ["Diaperchange no sleep" , "dpchge ZZZ"],
             "1" : ["ZZZ ZZZ", "ZZZzz ZZZ zz ZZZ"],
@@ -41,7 +41,7 @@
 
         },
 
-        "NoCommandFound" : {
+        "noCommandFound" : {
 
 
             "0" : ["NoCommandFound" , "NoCommandFound"],

@@ -1,33 +1,47 @@
 const fs = require('fs')
 const setting = require('./Settings/chatRecorderSetting.json')
 
-const ChatRecorder = {
-    
-    records : [],
+class ChatRecorder {
 
-    getTimeStamp : function(){
+    constructor(){
+
+        this.records = []
+        this.stream = fs.createWriteStream(setting.outputPath + 'record_' + this.getTimeStamp(), {flag: 'a'})
+    }
+
+    
+    getTimeStamp(){
 
         let date = new Date()
-        return date.getFullYear() + "" + date.getMonth()  + "" +  date.getDate()  + "" + date.getHours() + "" + date.getMinutes() + "" + date.getSeconds()
+        return date.getFullYear() + "" + date.getMonth() + 1  + "" +  date.getDate()
 
-    },
+    }
 
-    storeMsg : function(msg) {
+    storeMsg(msg) {
         
-        ChatRecorder.records.push(msg)
+        this.records.push(msg)
 
-        if (ChatRecorder.records.length >= setting.recordCountToFlush){
+        if (this.records.length >= setting.recordCountToFlush){
 
-            ChatRecorder.saveMsg()
+            this.saveMsg()
 
         }
 
-    },
+    }
 
-    saveMsg : function(){
+    saveMsg(){
+  
+        if(setting.recordCountToFlush === 1){
+            this.stream.write(this.records + "\n")
+            this.records = []
 
-        fs.writeFileSync( setting.outputPath + 'record_' + ChatRecorder.getTimeStamp(), ChatRecorder.records.join('\n'))
-        ChatRecorder.records = []
+        }else{
+
+            this.stream.write(this.records.join('\n'))
+            this.records = []
+        }
+       
+       
     }
 }
 

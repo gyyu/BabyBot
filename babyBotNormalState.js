@@ -1,5 +1,6 @@
 const normalState = require('./Settings/normalState.json')
 const BabyBotStateParent = require('./babyBotStateParent.js')
+const botRecorder = require('./botStateRecorder.js')
 
 class NormalState extends BabyBotStateParent{
 
@@ -7,66 +8,81 @@ class NormalState extends BabyBotStateParent{
 
       super(botRef)
       this.normalResponse = normalState.response
+      this.getAgeInYMD = botRef.getAgeInYMD.bind(botRef)
 
       let len = normalState.eventInterval.length
       let ran = Math.floor(Math.random()* len)
-      this.changeStateIntervalID = setTimeout(this.evokeRandomState, normalState.eventInterval[ran])
+      botRecorder.backupJson(normalState, "normalState")
+      this.changeStateTimeoutID = setTimeout(this.changeState.bind(this), normalState.eventInterval[ran])
+      this.sayRandomSentenceIntervalID = setInterval(this.sayRandomSentence.bind(this), 30000)
+
     }
   
+    changeState(){
+
+      botRecorder.saveJson(normalState, "normalState")
+      this.evokeRandomState()
+    }
+
     onCommand (cmdName) {
      
-      let ageGroup = this.getAgeGroup()
       let response
   
-      if(!this.normalResponse[cmdName]){
+      if(!normalState.stateCommands[cmdName]){
              
-        cmdName = "NoCommandFound"
+        cmdName = "noCommandFound"
 
       }
 
       switch(cmdName){
 
-        case 'Nap':
-
-          clearTimeout(this.changeStateIntervalID)
+        case 'nap':
+          clearTimeout(this.changeStateTimeoutID)
           this.toNappingState()
           break
         
-        case 'YayCopyPasta':
+        case 'yaycopypasta':
           normalState.copyPastaProbability.encouraged += 1
           break
 
-        case 'NoCopyPasta':
-
+        case 'nocopypasta':
           normalState.copyPastaProbability.discouraged -= 1
           break
         
-        case 'YayCurse':
-
+        case 'yaycurse':
           normalState.curseProbability.encouraged += 1
           break
         
-        case 'NoCurse':
-
+        case 'nocurse':
           normalState.curseProbability.encouraged -= 1
+          break
+
+        case 'growthreport' :
+          this.getReport()
           break
         
         default:
-
-          let listLength = this.normalResponse[cmdName][ageGroup].length
+          console.log(this)
+          let listLength = this.normalResponse[cmdName][this.ageGroup].length
           let ranNum = Math.floor(Math.random() * listLength)
       
-          response = this.normalResponse[cmdName][ageGroup][ranNum] 
-          this.sendMessage('','chat', response)
+          response = this.normalResponse[cmdName][this.ageGroup][ranNum] 
+          this.sendMessage(response)
       }
           
     }
 
+    //TODO
+    onTagged(msg){
+
+
+    }
+
     onMessage(msg){
 
-      let emote = this.emoteExist(msg)
-      console.log(emote)
-      //if shows up in the last 10 msgs too
+      let emote = this.getEmote(msg)
+    
+      //TODO: if shows up in the last 10 msgs too
       if (msg.length >= 10){
 
         this.repeatCopyPasta(msg)
@@ -79,21 +95,21 @@ class NormalState extends BabyBotStateParent{
         let prob = Math.floor(Math.random() * (max - min + 1)) + min
         console.log(prob)
         if(prob >= 0){
-
-          console.log(emote)
-          this.sendMessage('', 'chat', emote)
-        }
-        
+    
+          this.sendMessage(emote)
+        }      
 
       }else{
   
         let words = msg.filter(word => word.length > 3)
         let ranNum = Math.floor(Math.random() * words.length)
         let word = msg[ranNum]
+
+        let prob = Math.round(Math.random())
         
-        if(!normalState.askedWord[word] && word.length > 3){
+        if(!normalState.askedWord[word] && word.length > 3 && prob >= 0.5){
           normalState.askedWord[word] = true
-          this.sendMessage('','chat', "What is " + word.replace(/[,.?&]+/g, "") + "?")
+          this.sendMessage( "What is " + word.replace(/[,.?&]+/g, "") + "?")
         }
 
       }
@@ -117,7 +133,7 @@ class NormalState extends BabyBotStateParent{
   
       if(prob >= 0){
 
-        this.sendMessage('','chat', msg)
+        this.sendMessage(msg)
 
       }
       
@@ -132,13 +148,13 @@ class NormalState extends BabyBotStateParent{
 
       if(prob >= 0){
 
-        this.sendMessage('','chat', "Some curse words here")
+        this.sendMessage("Some curse words here")
 
       }
 
     }
 
-    emoteExist(msg){
+    getEmote(msg){
 
       let emoteList = msg.filter(word => normalState.emoteList[word])
       let listLen = emoteList.length
@@ -146,13 +162,39 @@ class NormalState extends BabyBotStateParent{
       if(listLen > 0){
 
         let ranNum = Math.floor(Math.random() * emoteList.length)
-        word = msg[ranNum]
+        let emote = emoteList[ranNum]
+        word = normalState.emoteList[emote]
       }
       
       return word
     
     }
+
+    sayRandomSentence(){
+
+      this.sendMessage("Some sentences here")
+
+    }
   
+    getReport () {
+      
+      let age = this.getAgeInYMD()
+      this.sendMessage("/me BabyBot is " + age[0]  + " year " + age[1] + " month " + " and " + age[2] + " days old!")
+    }
+
+
+    clearIntervals(){
+      clearTimeout(this.changeStateTimeoutID)
+      clearInterval(this.sayRandomSentenceIntervalID)
+    }
+
+    saveStatus(){
+
+      botRecorder.saveJson(normalState, "normalState")
+
+    }
+    
+
   }
 
   module.exports = NormalState

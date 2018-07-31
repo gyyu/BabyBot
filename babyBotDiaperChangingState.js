@@ -8,18 +8,18 @@ class DiaperChangingState extends BabyBotStateParent{
     super(botRef)
     this.diaperChangeResponse = diaperChangeState.response
     this.stateMessage = diaperChangeState.message
-    this.sendMessage("","", this.stateMessage)  
-    this.requestChangingIntervalID = setInterval(this.sendMessage.bind(this, "","", this.stateMessage), diaperChangeState.messageInterval)
+    this.sendMessage(this.stateMessage)  
+    this.requestChangingIntervalID = setInterval(this.sendMessage.bind(this, this.stateMessage), diaperChangeState.messageInterval)
     
 }
 
   onCommand (cmdName) {
 
-    let ageGroup = this.getAgeGroup()
+    let ageGroup = this.ageGroup
     
     if(!this.diaperChangeResponse[cmdName]){
             
-        cmdName = "NoCommandFound"
+        cmdName = "noCommandFound"
 
     }
 
@@ -28,14 +28,26 @@ class DiaperChangingState extends BabyBotStateParent{
 
     let response = this.diaperChangeResponse[cmdName][ageGroup][ranNum]
 
-    if (cmdName === 'Change') {
-        clearInterval(this.requestChangingIntervalID)
+    if (cmdName === 'change') {
+        this.clearIntervals()
         this.toNormalState()      
     }
 
-    this.sendMessage("","chat", response)
+    this.sendMessage(response)
   }
 
+  onMessage(){}
+  onTagged(msg){}
+  
+  clearIntervals(){
+
+    clearInterval(this.requestChangingIntervalID)
+
+  }
+
+  saveStatus(){}
+
+  
 }
 
 module.exports = DiaperChangingState
