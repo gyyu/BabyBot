@@ -1,1 +1,1 @@
-### Backup folder settings
+### Backup settings
