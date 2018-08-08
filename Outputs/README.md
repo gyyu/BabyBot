@@ -1,1 +1,1 @@
-### Output folder for chat records
+### Output chat records
