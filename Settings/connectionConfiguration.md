@@ -1,5 +1,7 @@
 
-** Name the file "connectionSetting.json"
+#### Name the file "connectionSetting.json"
+
+```javascript
 {
     
     "checkOfflineInterval" : 150000,
@@ -22,3 +24,4 @@
     }
 
 }
+```
