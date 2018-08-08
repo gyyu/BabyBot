@@ -2,71 +2,37 @@
 
 ## Setup
 
-1. `npm install tmi.js`
+1. `npm i tmi.js`
 2. Clone the master branch of BabyBot project
 3. Use command prompt/terminal to navigate to the project folder
 4. run program using `node main.js`
 5. Force to kill the program with **ctrl-c**
 
-## main.js
-- Create class objects of the program
-- Initialize each class
+## Features
 
-## twitchHandler.js
-- Handles connection with Twitch
-- Sends chat message to babyBotChannel.js to get response from babyBot
+1. Bot will age from 0 to 3 years old (set in botSetting.json)
+2. Default State of bot is Normal state where it will "learn" and converse with users
+3. Bot will triggered random events after a certain amount of time (set in normalState.json)
+4. Bot maintains a point system to weight user influence
+5. Bot will record conversations of users who consent to participate in the research
 
-### connectionSetting.json
-- Contains connection setting to Twitch
-- Defines message parsing symbols
-- Defines interval for calling functions
+## Events
+### Crying
+- When the bot starts to cry, users have to hold the bot a certain amount of time (set in cryingState.json)
+- User can put down the bot. If the held time is not fulfilled, the bot will resume crying
+- Users can put the bot to sleep using the Nap command
 
-## babyBotChannel.js
-- Facilitates communication between babyBot and twitchHandler
-- setMethods acts as a registrator which registers methods from babyBot and twitchHandler to be used
+### Napping
+- Bot will go to sleep for a certain amount of time (set in napState.json)
+- While it is asleep, the bot will not have any interaction with the chat
 
-## babyBot.js
-- The core logic of the bot
-- Stores bot information
-- Switches between states based on event
+### Diaper Changing
+- Bot will request the chat to change its diaper
 
-### botState.json
-- Defines bot age conversion rule
-- Stores bot age
-- Stores available states
-- Stores bot username
-- Stores words learned
-
-### babyBotNormalState.js
-#### normalState.json
-- Normal state of the bot
-
-### babyBotCryingState.js
-#### cyringState.json
-- Crying state of the bot
-- Will keep on sending crying message until users use !Hold command
-- Sends whisper to the user who used the Hold command
-- If other users who are not holding the not use command while the bot is being held, the bot will tell the chat who is currently holding the bot
-- The user who is holding the bot can put down the bot using the !PutDown command in whisper
-- If the user who is holding the bot tries to use other commands in the chat, the bot will whisper to the user telling him/her he is holding the bot right now
-- Goes back to Normal state once the bot is being held certain amount of time
-
-### babyBotNappingState.js
-#### nappingState.json
-- Napping state of the bot
-- Does not respond to any message for a period of time
-- Goes back to Normal state once the bot is awake
-
-### babyBotDiaperChangingState.js
-#### diaperChangeState.json
-- Needs to change the bot's diaper
-- Will keep on sending request until users used the Change command
-- Goes back to Normal state once the diaper is changed
-
-### babyBotHungryState.js
-#### hungryState.json
-- Asks the users to feed it
-- If the bot doens't know the food already will add the food to list
+### Hungry
+- Bot will ask the chat to feed it
+- Bot will have different reaction based on its liking of the food
+- If bot is being fed with something it never had before, it will eat and decide if it like the food
 
 
 ### Bot Flow Diagram
