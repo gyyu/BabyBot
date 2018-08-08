@@ -1,4 +1,5 @@
 
+** Name the file "connectionSetting.json"
 {
     
     "checkOfflineInterval" : 150000,
